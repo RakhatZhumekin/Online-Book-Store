@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Authors</title>
+</head>
+<body>
+    <tr th:each="author: ${authors}">
+        <td th:text="${author.id}">1</td>
+        <td th:text="${author.name}">Bob</td>
+        <td th:text="${#temporals.format(author.birthday, 'dd-MM-yyyy')}">12-11-2012</td>
+    </tr>
+</body>
+</html>
