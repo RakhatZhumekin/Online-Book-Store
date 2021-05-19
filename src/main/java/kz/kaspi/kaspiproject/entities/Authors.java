@@ -28,8 +28,7 @@ public class Authors {
     public Authors() {
     }
 
-    public Authors(int id, String name, LocalDate birthday) {
-        this.id = id;
+    public Authors(String name, LocalDate birthday) {
         this.name = name;
         this.birthday = birthday;
     }

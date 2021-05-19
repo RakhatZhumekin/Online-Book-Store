@@ -22,8 +22,7 @@ public class Sections {
 
     }
 
-    public Sections(int id, String name) {
-        this.id = id;
+    public Sections(String name) {
         this.name = name;
     }
 

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Sections</title>
+</head>
+<body>
+    <h1>All sections</h1>
+    <a th:href="@{/sections/new}">Add new section</a>
+    <table>
+        <tr>
+            <td>ID</td>
+            <td>Name</td>
+        </tr>
+        <tr th:each="section: ${sections}">
+            <td th:text="${section.id}">1</td>
+            <td th:text="${section.name}">Bob</td>
+            <td><a th:href="@{/sections/{id}(id=${section.id})}">Update</a></td>
+            <td><a>Delete</a></td>
+        </tr>
+    </table>
+</body>
+</html>

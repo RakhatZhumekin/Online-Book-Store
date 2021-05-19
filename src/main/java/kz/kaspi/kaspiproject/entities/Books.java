@@ -31,8 +31,7 @@ public class Books {
 
     }
 
-    public Books(int id, String name, Authors author, Sections section, String language, int price) {
-        this.id = id;
+    public Books(String name, Authors author, Sections section, String language, int price) {
         this.name = name;
         this.author = author;
         this.section = section;

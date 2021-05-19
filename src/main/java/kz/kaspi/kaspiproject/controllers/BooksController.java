@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -23,6 +24,16 @@ public class BooksController {
 
         model.addAttribute("books", books);
 
-        return "list-books";
+        return "books/list-books";
+    }
+
+    @GetMapping("/new")
+    public String newForm(Model model) {
+        return "books/new";
+    }
+
+    @GetMapping("/{id}")
+    public String findById(@PathVariable int id, Model model) {
+        return "books/update";
     }
 }

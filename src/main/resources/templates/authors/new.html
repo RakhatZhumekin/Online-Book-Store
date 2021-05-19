@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new author</title>
+</head>
+<body>
+    <h1>New Author</h1>
+    <a th:href="@{/authors}">Back to list</a>
+    <form th:action="@{/authors}" method="post" th:object="${author}">
+        <div>
+            <label>Name</label>
+            <input type="text" th:field="*{name}" th:errorclass="is-invalid">
+            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        </div>
+
+        <div>
+            <label>Birthday</label>
+            <input type="date" th:field="*{birthday}" th:errorclass="is-invalid">
+            <div th:if="${#fields.hasErrors('birthday')}" th:errors="*{birthday}">
+            </div>
+        </div>
+        <input type="submit" value="Save">
+    </form>
+</body>
+</html>

@@ -19,7 +19,13 @@ public class AuthorsService {
         return authorsRepository.findById(id).orElse(null);
     }
 
+    public void save(Authors author) { authorsRepository.save(author); }
+
     public List<Authors> findAll() {
         return authorsRepository.findAll();
+    }
+
+    public void deleteById(int id) {
+        authorsRepository.deleteById(id);
     }
 }
