@@ -93,8 +93,12 @@ public class BooksController {
         Authors author = book.getAuthor();
         Sections section = book.getSection();
 
-        author.getBooks().remove(book);
-        section.getBooks().remove(book);
+        if (author != null)
+            author.getBooks().remove(book);
+
+        if (section != null)
+            section.getBooks().remove(book);
+
         booksService.deleteById(id);
 
         return returnList(model);

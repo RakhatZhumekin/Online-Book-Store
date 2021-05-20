@@ -3,7 +3,9 @@ package kz.kaspi.kaspiproject.controllers;
 import kz.kaspi.kaspiproject.dto.AuthorsDTO;
 import kz.kaspi.kaspiproject.dto.SectionsDTO;
 import kz.kaspi.kaspiproject.entities.Authors;
+import kz.kaspi.kaspiproject.entities.Books;
 import kz.kaspi.kaspiproject.entities.Sections;
+import kz.kaspi.kaspiproject.services.BooksService;
 import kz.kaspi.kaspiproject.services.SectionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -21,6 +24,9 @@ public class SectionsController {
 
     @Autowired
     SectionsService sectionsService;
+
+    @Autowired
+    BooksService booksService;
 
     @GetMapping
     public String list(Model model) {
@@ -65,6 +71,18 @@ public class SectionsController {
         Sections section = sectionsService.findById(id);
         if (section == null) {
             return "sections/error";
+        }
+
+        List<Books> books = new ArrayList<>(section.getBooks());
+
+        for (Books book: books) {
+            section.getBooks().remove(book);
+
+            Authors author = book.getAuthor();
+
+            author.getBooks().remove(book);
+
+            booksService.deleteById(book.getId());
         }
 
         sectionsService.deleteById(id);
