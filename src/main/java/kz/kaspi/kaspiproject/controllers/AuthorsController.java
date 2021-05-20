@@ -87,6 +87,6 @@ public class AuthorsController {
     private String returnList(Model model) {
         List<Authors> authors = authorsService.findAll();
         model.addAttribute("authors", authors);
-        return "authors/list-authors";
+        return "authors/list";
     }
 }

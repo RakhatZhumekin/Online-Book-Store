@@ -13,16 +13,17 @@ public class Books {
     @Column
     private String name;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "author_id")
     private Authors author;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "section_id")
     private Sections section;
 
     @Column
-    private String language;
+    @Enumerated(EnumType.STRING)
+    private Language language;
 
     @Column
     private int price;
@@ -31,7 +32,7 @@ public class Books {
 
     }
 
-    public Books(String name, Authors author, Sections section, String language, int price) {
+    public Books(String name, Authors author, Sections section, Language language, int price) {
         this.name = name;
         this.author = author;
         this.section = section;
@@ -71,11 +72,11 @@ public class Books {
         this.section = section;
     }
 
-    public String getLanguage() {
+    public Language getLanguage() {
         return language;
     }
 
-    public void setLanguage(String language) {
+    public void setLanguage(Language language) {
         this.language = language;
     }
 
@@ -97,5 +98,21 @@ public class Books {
                 ", language='" + language + '\'' +
                 ", price=" + price +
                 '}';
+    }
+
+    public enum Language {
+        RUSSIAN("Russian"),
+        KAZAKH("Kazakh"),
+        ENGLISH("English");
+
+        private final String name;
+
+        private Language(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 }

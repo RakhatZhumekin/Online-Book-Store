@@ -19,7 +19,15 @@ public class BooksService {
         return booksRepository.findById(id).orElse(null);
     }
 
+    public void save(Books book) {
+        booksRepository.save(book);
+    }
+
     public List<Books> findAll() {
         return booksRepository.findAll();
+    }
+
+    public void deleteById(int id) {
+        booksRepository.deleteById(id);
     }
 }

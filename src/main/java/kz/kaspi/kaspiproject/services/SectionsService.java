@@ -19,7 +19,15 @@ public class SectionsService {
         return sectionsRepository.findById(id).orElse(null);
     }
 
+    public void save(Sections section) {
+        sectionsRepository.save(section);
+    }
+
     public List<Sections> findAll() {
         return sectionsRepository.findAll();
+    }
+
+    public void deleteById(int id) {
+        sectionsRepository.deleteById(id);
     }
 }

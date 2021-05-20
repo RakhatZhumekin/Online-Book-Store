@@ -6,6 +6,7 @@
 </head>
 <body>
     <h1>All books</h1>
+    <a th:href="@{/}">Main page</a>
     <a th:href="@{/books/new}">Add new book</a>
     <table>
         <tr>
@@ -21,10 +22,10 @@
             <td th:text="${book.name}">Bob</td>
             <td th:text="${book.author.name}">Picasso</td>
             <td th:text="${book.section.name}"></td>
-            <td th:text="${book.language}"></td>
+            <td th:text="${book.language.name}"></td>
             <td th:text="${book.price}"></td>
             <td><a th:href="@{/books/{id}(id=${book.id})}">Update</a></td>
-            <td><a>Delete</a></td>
+            <td><a th:href="@{/books/delete/{id}(id=${book.id})}">Delete</a></td>
         </tr>
     </table>
 </body>

@@ -6,6 +6,7 @@
 </head>
 <body>
     <h1>All sections</h1>
+    <a th:href="@{/}">Main page</a>
     <a th:href="@{/sections/new}">Add new section</a>
     <table>
         <tr>
@@ -16,7 +17,7 @@
             <td th:text="${section.id}">1</td>
             <td th:text="${section.name}">Bob</td>
             <td><a th:href="@{/sections/{id}(id=${section.id})}">Update</a></td>
-            <td><a>Delete</a></td>
+            <td><a th:href="@{/sections/delete/{id}(id=${section.id})}">Delete</a></td>
         </tr>
     </table>
 </body>

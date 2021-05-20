@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Add new section</title>
 </head>
 <body>
     <h1>New Section</h1>
+    <a th:href="@{/sections}">Back to list</a>
+    <form th:action="@{/sections}" method="post" th:object="${section}">
+        <div>
+            <label>Name</label>
+            <input type="text" th:field="*{name}" th:errorclass="is-invalid">
+            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        </div>
+        <input type="submit" value="Save">
+    </form>
 </body>
 </html>
