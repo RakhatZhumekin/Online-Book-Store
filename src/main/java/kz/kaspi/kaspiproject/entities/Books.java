@@ -28,16 +28,25 @@ public class Books {
     @Column
     private int price;
 
+    @Column
+    private int quantity;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     public Books() {
 
     }
 
-    public Books(String name, Authors author, Sections section, Language language, int price) {
+    public Books(String name, Authors author, Sections section, Language language, int price, int quantity, Status status) {
         this.name = name;
         this.author = author;
         this.section = section;
         this.language = language;
         this.price = price;
+        this.quantity = quantity;
+        this.status = status;
     }
 
     public int getId() {
@@ -88,6 +97,22 @@ public class Books {
         this.price = price;
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "Books{" +
@@ -108,6 +133,21 @@ public class Books {
         private final String name;
 
         private Language(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    public enum Status {
+        AVAILABLE("Available"),
+        SOLD("Sold out");
+
+        private final String name;
+
+        private Status(String name) {
             this.name = name;
         }
 

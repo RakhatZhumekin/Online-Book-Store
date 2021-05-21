@@ -16,6 +16,8 @@
             <td>Section</td>
             <td>Language</td>
             <td>Price</td>
+            <td>Quantity</td>
+            <td>Status</td>
         </tr>
         <tr th:each="book: ${books}">
             <td th:text="${book.id}">1</td>
@@ -24,6 +26,8 @@
             <td th:text="${book.section.name}"></td>
             <td th:text="${book.language.name}"></td>
             <td th:text="${book.price}"></td>
+            <td th:text="${book.quantity}"></td>
+            <td th:text="${book.status.name}"></td>
             <td><a th:href="@{/books/{id}(id=${book.id})}">Update</a></td>
             <td><a th:href="@{/books/delete/{id}(id=${book.id})}">Delete</a></td>
         </tr>

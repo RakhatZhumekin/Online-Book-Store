@@ -2,8 +2,10 @@ package kz.kaspi.kaspiproject.dto;
 
 import kz.kaspi.kaspiproject.entities.Authors;
 import kz.kaspi.kaspiproject.entities.Books.Language;
+import kz.kaspi.kaspiproject.entities.Books.Status;
 import kz.kaspi.kaspiproject.entities.Sections;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -23,8 +25,11 @@ public class BooksDTO {
     @NotNull(message = "Give language")
     private Language language;
 
-    @NotNull(message = "Give price")
+    @Min(value = 1, message = "Price can't be less than 1")
     private int price;
+
+    @Min(value = 0, message = "Quantity can't be less than 0")
+    private int quantity;
 
     public BooksDTO() {
     }
@@ -75,5 +80,13 @@ public class BooksDTO {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

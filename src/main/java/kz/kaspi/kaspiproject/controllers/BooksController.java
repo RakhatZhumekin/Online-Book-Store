@@ -4,6 +4,7 @@ import kz.kaspi.kaspiproject.dto.BooksDTO;
 import kz.kaspi.kaspiproject.entities.Authors;
 import kz.kaspi.kaspiproject.entities.Books;
 import kz.kaspi.kaspiproject.entities.Books.Language;
+import kz.kaspi.kaspiproject.entities.Books.Status;
 import kz.kaspi.kaspiproject.entities.Sections;
 import kz.kaspi.kaspiproject.services.AuthorsService;
 import kz.kaspi.kaspiproject.services.BooksService;
@@ -65,6 +66,7 @@ public class BooksController {
         booksDTO.setSection(book.getSection());
         booksDTO.setLanguage(book.getLanguage());
         booksDTO.setPrice(book.getPrice());
+        booksDTO.setQuantity(book.getQuantity());
 
         model.addAttribute("book", booksDTO);
         return "books/update";
@@ -77,8 +79,15 @@ public class BooksController {
             return "books/new";
         }
 
+        Status status;
+
+        if (booksDTO.getQuantity() == 0)
+            status = Status.SOLD;
+        else
+            status = Status.AVAILABLE;
+
         booksService.save(new Books(booksDTO.getName(), booksDTO.getAuthor(), booksDTO.getSection(),
-                booksDTO.getLanguage(), booksDTO.getPrice()));
+                booksDTO.getLanguage(), booksDTO.getPrice(), booksDTO.getQuantity(), status));
 
         return "redirect:books";
     }
@@ -113,12 +122,22 @@ public class BooksController {
         Sections section = booksDTO.getSection();
         Language language = booksDTO.getLanguage();
         int price = booksDTO.getPrice();
+        int quantity = booksDTO.getQuantity();
+
+        Status status;
+
+        if (quantity == 0)
+            status = Status.SOLD;
+        else
+            status = Status.AVAILABLE;
 
         currentBook.setName(name);
         currentBook.setAuthor(author);
         currentBook.setSection(section);
         currentBook.setLanguage(language);
         currentBook.setPrice(price);
+        currentBook.setQuantity(quantity);
+        currentBook.setStatus(status);
 
         booksService.save(currentBook);
         return returnList(model);
