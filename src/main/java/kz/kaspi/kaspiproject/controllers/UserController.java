@@ -4,6 +4,7 @@ import kz.kaspi.kaspiproject.dto.UsersDTO;
 import kz.kaspi.kaspiproject.entities.Roles;
 import kz.kaspi.kaspiproject.entities.Users;
 import kz.kaspi.kaspiproject.services.RolesService;
+import kz.kaspi.kaspiproject.services.SecurityService;
 import kz.kaspi.kaspiproject.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +20,7 @@ import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/signup")
-public class RegistrationController {
+public class UserController {
 
     @Autowired
     private UsersService usersService;
@@ -29,6 +30,9 @@ public class RegistrationController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private SecurityService securityService;
 
     @ModelAttribute("getRole")
     private Roles getRole() {
@@ -46,7 +50,6 @@ public class RegistrationController {
     @PostMapping
     public String save(@Valid @ModelAttribute("user") UsersDTO usersDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            System.out.println("Oops");
             return "users/register";
         }
 
@@ -61,6 +64,18 @@ public class RegistrationController {
         usersService.save(user);
         System.out.println(user.getPassword());
 
-        return "index";
+        return "redirect:index";
     }
+
+    @GetMapping("/hello")
+    public String hello(Model model) {
+        return "users/hello";
+    }
+
+//    @PostMapping("/login")
+//    public String login(@Valid @ModelAttribute("user") UsersDTO usersDTO, BindingResult bindingResult) {
+//        if (bindingResult.hasErrors()) {
+//            return "users/login";
+//        }
+//    }
 }
