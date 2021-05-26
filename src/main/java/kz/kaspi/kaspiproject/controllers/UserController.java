@@ -72,6 +72,11 @@ public class UserController {
         return "users/hello";
     }
 
+
+    @GetMapping("/login")
+    public String loginForm(Model model) {
+        return "users/login";
+    }
 //    @PostMapping("/login")
 //    public String login(@Valid @ModelAttribute("user") UsersDTO usersDTO, BindingResult bindingResult) {
 //        if (bindingResult.hasErrors()) {

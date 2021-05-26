@@ -6,6 +6,8 @@
     <title>Hello</title>
 </head>
 <body>
-<h1>Hello <span sec:authentication="name"></span>!</h1>
+<div sec:authorize="isAuthenticated()">
+    <h1>Hello <span sec:authentication="name"></span>!</h1>
+</div>
 </body>
 </html>

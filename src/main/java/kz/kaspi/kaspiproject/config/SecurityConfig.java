@@ -30,12 +30,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/", "/signup").permitAll()
+        http.authorizeRequests().antMatchers("/", "/signup/**").permitAll()
                 .antMatchers("/authors").hasAuthority("admin").
                 anyRequest().authenticated().and()
-                .formLogin().permitAll().and()
+                .formLogin().permitAll().loginPage("/signup/login").defaultSuccessUrl("/").and()
                 .logout().permitAll();
     }
+
+    // csrf().disable().
+    // loginPage("/signup/login").
 
     @Bean
     public PasswordEncoder passwordEncoder() {
