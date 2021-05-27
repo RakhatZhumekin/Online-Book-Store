@@ -64,7 +64,7 @@ public class UserController {
         usersService.save(user);
         System.out.println(user.getPassword());
 
-        return "redirect:index";
+        return "redirect:/";
     }
 
     @GetMapping("/hello")
@@ -77,10 +77,9 @@ public class UserController {
     public String loginForm(Model model) {
         return "users/login";
     }
-//    @PostMapping("/login")
-//    public String login(@Valid @ModelAttribute("user") UsersDTO usersDTO, BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//            return "users/login";
-//        }
-//    }
+
+    @GetMapping("/error")
+    public String errorPage(Model model) {
+        return "error";
+    }
 }

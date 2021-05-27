@@ -1,6 +1,5 @@
 package kz.kaspi.kaspiproject.config;
 
-import kz.kaspi.kaspiproject.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,15 +29,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/", "/signup/**").permitAll()
-                .antMatchers("/authors").hasAuthority("admin").
+        http.authorizeRequests().antMatchers("/", "/signup/**", "/books", "/authors", "/sections").permitAll()
+                .antMatchers("/authors/new", "/authors/{id}", "authors/delete/{id}").hasAuthority("admin")
+                .antMatchers("/sections/new", "/sections/{id}", "sections/delete/{id}").hasAuthority("admin")
+                .antMatchers("/books/new", "/books/{id}", "books/delete/{id}").hasAuthority("admin").
                 anyRequest().authenticated().and()
-                .formLogin().permitAll().loginPage("/signup/login").defaultSuccessUrl("/").and()
-                .logout().permitAll();
+                .formLogin().permitAll().loginPage("/signup/login").
+                loginProcessingUrl("/login").
+                usernameParameter("username").
+                passwordParameter("password").
+                defaultSuccessUrl("/", true).and()
+                .exceptionHandling().accessDeniedPage("/error").and()
+                .logout().logoutUrl("/logout").
+                logoutSuccessUrl("/").permitAll();
     }
 
     // csrf().disable().
     // loginPage("/signup/login").
+    // antMatchers("/authors").hasAuthority("admin").
 
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Not enough privileges</title>
+</head>
+<body>
+    <h1 sec:authorize="isAuthenticated()">It doesn't seem you have enough privileges, <span sec:authentication="name"></span></h1>
+    <h1 sec:authorize="!isAuthenticated()">You have not logged in.</h1>
+    <a th:href="@{/}">Back to home page</a>
+</body>
+</html>

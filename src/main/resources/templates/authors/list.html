@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Authors</title>
@@ -7,7 +8,7 @@
 <body>
     <h1>All authors</h1>
     <a th:href="@{/}">Main page</a>
-    <a th:href="@{/authors/new}">Add new author</a>
+    <a th:href="@{/authors/new}" sec:authorize="hasAuthority('admin')">Add new author</a>
     <table>
         <tr>
             <td>ID</td>
@@ -18,8 +19,8 @@
             <td th:text="${author.id}">1</td>
             <td th:text="${author.name}">Bob</td>
             <td th:text="${#temporals.format(author.birthday, 'dd-MM-yyyy')}">12-11-2012</td>
-            <td><a th:href="@{/authors/{id}(id=${author.id})}">Update</a></td>
-            <td><a th:href="@{/authors/delete/{id}(id=${author.id})}">Delete</a></td>
+            <td sec:authorize="hasAuthority('admin')"><a th:href="@{/authors/{id}(id=${author.id})}">Update</a></td>
+            <td sec:authorize="hasAuthority('admin')"><a th:href="@{/authors/delete/{id}(id=${author.id})}">Delete</a></td>
         </tr>
     </table>
 </body>

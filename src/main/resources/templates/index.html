@@ -6,16 +6,20 @@
     <title>Hello</title>
 </head>
 <body>
-    <a href="authors">Authors list</a>
-    <a href="sections">Sections list</a>
-    <a href="books">Books list</a>
+    <a th:href="@{/authors}">Authors list</a>
+    <a th:href="@{/sections}">Sections list</a>
+    <a th:href="@{/books}">Books list</a>
     <div sec:authorize="!isAuthenticated()">
-        <h1>Login</h1>
-        <h1>Register</h1>
+        <h1><a th:href="@{/signup/login}">Login</a></h1>
+        <h1><a th:href="@{/signup}">Register</a></h1>
     </div>
     <div sec:authorize="isAuthenticated()">
         <h1>Welcome, <span sec:authentication="name"></span></h1>
-        <h1>Logout</h1>
+        <div sec:authorize="hasAuthority('admin')">Has Authority ADMIN</div>
+        <div sec:authorize="hasAuthority('user')">Has Authority USER</div>
+        <form th:action="@{/logout}" method="POST">
+            <input type="submit" value="Logout"/>
+        </form>
     </div>
 </body>
 </html>
