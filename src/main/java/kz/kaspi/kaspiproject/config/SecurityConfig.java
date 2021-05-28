@@ -1,6 +1,7 @@
 package kz.kaspi.kaspiproject.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -32,7 +33,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/", "/signup/**", "/books", "/authors", "/sections").permitAll()
                 .antMatchers("/authors/new", "/authors/{id}", "authors/delete/{id}").hasAuthority("admin")
                 .antMatchers("/sections/new", "/sections/{id}", "sections/delete/{id}").hasAuthority("admin")
-                .antMatchers("/books/new", "/books/{id}", "books/delete/{id}").hasAuthority("admin").
+                .antMatchers("/books/new", "/books/{id}", "books/delete/{id}").hasAuthority("admin")
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll().
                 anyRequest().authenticated().and()
                 .formLogin().permitAll().loginPage("/signup/login").
                 loginProcessingUrl("/login").
@@ -43,10 +45,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout().logoutUrl("/logout").
                 logoutSuccessUrl("/").permitAll();
     }
-
-    // csrf().disable().
-    // loginPage("/signup/login").
-    // antMatchers("/authors").hasAuthority("admin").
 
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -53,11 +53,11 @@ public class UserController {
             return "users/register";
         }
 
-        if (usersService.findByName(usersDTO.getName()) != null)
+        if (usersService.findByName(usersDTO.getName().trim()) != null)
             return "users/error";
 
         Users user = new Users();
-        user.setName(usersDTO.getName());
+        user.setName(usersDTO.getName().trim());
         user.setRole(usersDTO.getRole());
         user.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
 
