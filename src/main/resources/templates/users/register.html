@@ -3,25 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
+    <link rel="stylesheet" href="../css/users/login.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
     <h1>New User</h1>
-    <a th:href="@{/}">Back to home page</a>
+    <div id="home">
+        <a th:href="@{/}">Back to home page</a>
+    </div>
     <form th:action="@{/signup}" method="post" th:object="${user}">
-        <div>
-            <label>Name</label>
-            <input type="text" th:field="*{name}" th:errorclass="is-invalid">
-            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        <div class="form-group">
+            <label for="username">Username: </label>
+            <input type="text" th:field="*{name}" th:errorclass="is-invalid" id="username" placeholder="username">
+            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></div>
         </div>
 
         <input type="hidden" th:field="*{role}">
 
-        <div>
-            <label>Password</label>
-            <input type="text" th:field="*{password}" th:errorclass="is-invalid">
-            <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        <div class="form-group">
+            <label for="password">Password: </label>
+            <input type="text" th:field="*{password}" th:errorclass="is-invalid" id="password">
+            <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error"></div>
         </div>
-        <input type="submit" value="Save">
+        <button type="submit" class="btn btn-default">Save</button>
     </form>
 </body>
 </html>

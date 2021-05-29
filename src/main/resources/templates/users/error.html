@@ -3,10 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Error</title>
+    <link rel="stylesheet" href="../css/error.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <a th:href="@{/}">Back to home page</a>
     <h1>Error while registering</h1>
     <h2>User with such name already exists</h2>
+    <div>
+        <a th:href="@{/}">Back to home page</a>
+    </div>
 </body>
 </html>

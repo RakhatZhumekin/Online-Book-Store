@@ -17,7 +17,7 @@ public class UsersDTO {
     @NotNull(message = "Give role")
     private Roles role;
 
-    @NotNull(message = "Give password")
+    @NotBlank(message = "Give password")
     @Size(max = 20, message = "Maximum of 20 characters for password")
     private String password;
 
