@@ -43,6 +43,8 @@ public class AuthorsController {
     public String findById(@PathVariable int id, Model model) {
         Authors author = authorsService.findById(id);
         if (author == null) {
+            model.addAttribute("description", "Error finding the author");
+            model.addAttribute("cause", "The author with the given id does not exist");
             return "authors/error";
         }
 
@@ -56,10 +58,16 @@ public class AuthorsController {
     }
 
     @PostMapping
-    public String save(@Valid @ModelAttribute("author") AuthorsDTO authorsDTO, BindingResult bindingResult) {
+    public String save(@Valid @ModelAttribute("author") AuthorsDTO authorsDTO, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
             return "authors/new";
+        }
+
+        if (authorsService.findByName(authorsDTO.getName()) != null) {
+            model.addAttribute("description", "Error creating the author");
+            model.addAttribute("cause", "The author with the given name already exists");
+            return "authors/error";
         }
 
         authorsService.save(new Authors(authorsDTO.getName(), authorsDTO.getBirthday()));
@@ -67,10 +75,12 @@ public class AuthorsController {
         return "redirect:authors";
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteById(@PathVariable int id, Model model) {
+    @GetMapping("/delete")
+    public String deleteById(@RequestParam(value = "id") int id, Model model) {
         Authors author = authorsService.findById(id);
         if (author == null) {
+            model.addAttribute("description", "Error deleting the author");
+            model.addAttribute("cause", "The author with the given id does not exist");
             return "authors/error";
         }
 
@@ -91,11 +101,22 @@ public class AuthorsController {
     }
 
     @GetMapping("/update")
-    public String update(@Valid @ModelAttribute("author") AuthorsDTO authorsDTO, Model model) {
+    public String update(@Valid @ModelAttribute("author") AuthorsDTO authorsDTO, BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            return "authors/update";
+        }
+
         Authors currentAuthor = authorsService.findById(authorsDTO.getId());
 
         String name = authorsDTO.getName();
         LocalDate birthday = authorsDTO.getBirthday();
+
+        if (authorsService.findByName(name) != null && !authorsService.findByName(name).equals(currentAuthor)) {
+            model.addAttribute("description", "Error updating the author");
+            model.addAttribute("cause", "Another author with such name already exists");
+            return "authors/error";
+        }
 
         currentAuthor.setName(name);
         currentAuthor.setBirthday(birthday);

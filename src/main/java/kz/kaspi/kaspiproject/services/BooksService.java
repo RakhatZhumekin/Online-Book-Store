@@ -30,4 +30,6 @@ public class BooksService {
     public void deleteById(int id) {
         booksRepository.deleteById(id);
     }
+
+    public Books findByName(String name) { return booksRepository.findByNameIgnoreCase(name); }
 }

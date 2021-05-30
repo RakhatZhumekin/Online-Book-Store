@@ -39,7 +39,7 @@
                 <td th:text="${book.quantity}"></td>
                 <td th:text="${book.status.name}"></td>
                 <td sec:authorize="hasAuthority('admin')"><a th:href="@{/books/{id}(id=${book.id})}">Update</a></td>
-                <td sec:authorize="hasAuthority('admin')"><a th:href="@{/books/delete/{id}(id=${book.id})}">Delete</a></td>
+                <td sec:authorize="hasAuthority('admin')"><a th:href="@{/books/delete(id=${book.id})}">Delete</a></td>
             </tr>
         </tbody>
     </table>

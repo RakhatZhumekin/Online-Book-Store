@@ -56,6 +56,8 @@ public class BooksController {
     public String findById(@PathVariable int id, Model model) {
         Books book = booksService.findById(id);
         if (book == null) {
+            model.addAttribute("description", "Error finding the book");
+            model.addAttribute("cause", "The book with the given id does not exist");
             return "authors/error";
         }
 
@@ -73,10 +75,16 @@ public class BooksController {
     }
 
     @PostMapping
-    public String save(@Valid @ModelAttribute("book") BooksDTO booksDTO, BindingResult bindingResult) {
+    public String save(@Valid @ModelAttribute("book") BooksDTO booksDTO, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
             return "books/new";
+        }
+
+        if (booksService.findByName(booksDTO.getName()) != null) {
+            model.addAttribute("description", "Error creating the book");
+            model.addAttribute("cause", "The book with the given name already exists");
+            return "books/error";
         }
 
         Status status;
@@ -92,10 +100,12 @@ public class BooksController {
         return "redirect:books";
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteById(@PathVariable int id, Model model) {
+    @GetMapping("/delete")
+    public String deleteById(@RequestParam(value = "id") int id, Model model) {
         Books book = booksService.findById(id);
         if (book == null) {
+            model.addAttribute("description", "Error deleting the book");
+            model.addAttribute("cause", "The book with the given id does not exist");
             return "books/error";
         }
 
@@ -114,7 +124,12 @@ public class BooksController {
     }
 
     @GetMapping("/update")
-    public String update(@Valid @ModelAttribute("book") BooksDTO booksDTO, Model model) {
+    public String update(@Valid @ModelAttribute("book") BooksDTO booksDTO, BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            return "books/update";
+        }
+
         Books currentBook = booksService.findById(booksDTO.getId());
 
         String name = booksDTO.getName();
@@ -130,6 +145,12 @@ public class BooksController {
             status = Status.SOLD;
         else
             status = Status.AVAILABLE;
+
+        if (booksService.findByName(name) != null && !booksService.findByName(name).equals(currentBook)) {
+            model.addAttribute("description", "Error updating the book");
+            model.addAttribute("cause", "Another book with such name already exists");
+            return "books/error";
+        }
 
         currentBook.setName(name);
         currentBook.setAuthor(author);

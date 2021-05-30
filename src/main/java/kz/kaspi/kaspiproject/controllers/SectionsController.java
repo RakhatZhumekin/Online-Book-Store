@@ -43,6 +43,8 @@ public class SectionsController {
     public String findById(@PathVariable int id, Model model) {
         Sections section = sectionsService.findById(id);
         if (section == null) {
+            model.addAttribute("description", "Error finding the section");
+            model.addAttribute("cause", "The section with the given id does not exist");
             return "authors/error";
         }
 
@@ -55,10 +57,16 @@ public class SectionsController {
     }
 
     @PostMapping
-    public String save(@Valid @ModelAttribute("section") SectionsDTO sectionsDTO, BindingResult bindingResult) {
+    public String save(@Valid @ModelAttribute("section") SectionsDTO sectionsDTO, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
             return "sections/new";
+        }
+
+        if (sectionsService.findByName(sectionsDTO.getName()) != null) {
+            model.addAttribute("description", "Error creating the section");
+            model.addAttribute("cause", "The section with the given name already exists");
+            return "sections/error";
         }
 
         sectionsService.save(new Sections(sectionsDTO.getName()));
@@ -66,10 +74,12 @@ public class SectionsController {
         return "redirect:sections";
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteById(@PathVariable int id, Model model) {
+    @GetMapping("/delete")
+    public String deleteById(@RequestParam(value = "id") int id, Model model) {
         Sections section = sectionsService.findById(id);
         if (section == null) {
+            model.addAttribute("description", "Error deleting the section");
+            model.addAttribute("cause", "The section with the given id does not exist");
             return "sections/error";
         }
 
@@ -90,10 +100,21 @@ public class SectionsController {
     }
 
     @GetMapping("/update")
-    public String update(@Valid @ModelAttribute("section") SectionsDTO sectionsDTO, Model model) {
+    public String update(@Valid @ModelAttribute("section") SectionsDTO sectionsDTO, BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            return "sections/update";
+        }
+
         Sections currentSection = sectionsService.findById(sectionsDTO.getId());
 
         String name = sectionsDTO.getName();
+
+        if (sectionsService.findByName(sectionsDTO.getName()) != null && !sectionsService.findByName(sectionsDTO.getName()).equals(currentSection)) {
+            model.addAttribute("description", "Error updating the section");
+            model.addAttribute("cause", "Another section with such name already exists");
+            return "sections/error";
+        }
 
         currentSection.setName(name);
 

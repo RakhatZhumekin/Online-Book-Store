@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SectionsRepository extends JpaRepository<Sections, Integer> {
 
+    public Sections findByNameIgnoreCase(String name);
 }

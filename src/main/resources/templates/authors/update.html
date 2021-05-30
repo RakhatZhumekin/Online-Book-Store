@@ -3,25 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <title>Update Author</title>
+    <link rel="stylesheet" href="../css/form.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
     <h1>Update Author</h1>
-    <a th:href="@{/authors}">Back to list</a>
+    <div id="home">
+        <a th:href="@{/authors}">Back to list</a>
+    </div>
     <form th:action="@{/authors/update}" method="get" th:object="${author}">
         <input type="hidden" th:field="*{id}">
-        <div>
-            <label>Name</label>
+        <div class="form-group">
+            <label>Name: </label>
             <input type="text" th:field="*{name}" th:errorclass="is-invalid">
-            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+            <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
         </div>
 
-        <div>
-            <label>Birthday</label>
+        <div class="form-group">
+            <label>Birthday: </label>
             <input type="date" th:field="*{birthday}" th:errorclass="is-invalid">
-            <div th:if="${#fields.hasErrors('birthday')}" th:errors="*{birthday}">
+            <div class="error" th:if="${#fields.hasErrors('birthday')}" th:errors="*{birthday}">
             </div>
         </div>
-        <input type="submit" value="Save">
+        <button type="submit" class="btn btn-default">Save</button>
     </form>
 </body>
 </html>

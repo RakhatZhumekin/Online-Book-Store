@@ -28,4 +28,6 @@ public class AuthorsService {
     public void deleteById(int id) {
         authorsRepository.deleteById(id);
     }
+
+    public Authors findByName(String name) { return authorsRepository.findByNameIgnoreCase(name);}
 }

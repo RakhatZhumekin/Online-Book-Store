@@ -3,63 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <title>Add new book</title>
+    <link rel="stylesheet" href="../css/form.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
     <h1>New Book</h1>
-    <a th:href="@{/books}">Back to list</a>
+    <div id="home">
+        <a th:href="@{/books}">Back to list</a>
+    </div>
     <form th:action="@{/books}" method="post" th:object="${book}">
-        <div>
-            <label>Name</label>
+        <div class="form-group">
+            <label>Name: </label>
             <input type="text" th:field="*{name}" th:errorclass="is-invalid">
-            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+            <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
         </div>
 
-        <div>
-            <label>Author</label>
+        <div class="form-group">
+            <label>Author: </label>
             <select th:field="*{author}" th:errorclass="is-invalid">
                 <option th:each="author: ${allAuthors}" th:value="${author.id}"
                         th:text="${author.name}">
                     Author
                 </option>
             </select>
-            <div th:if="${#fields.hasErrors('author')}" th:errors="*{author}">
+            <div class="error" th:if="${#fields.hasErrors('author')}" th:errors="*{author}">
             </div>
         </div>
 
-        <div>
-            <label>Section</label>
+        <div class="form-group">
+            <label>Section: </label>
             <select th:field="*{section}" th:errorclass="is-invalid">
                 <option th:each="section: ${allSections}" th:value="${section.id}"
                         th:text="${section.name}">
                     Section
                 </option>
             </select>
-            <div th:if="${#fields.hasErrors('section')}" th:errors="*{section}">
+            <div class="error" th:if="${#fields.hasErrors('section')}" th:errors="*{section}">
             </div>
         </div>
 
-        <div>
-            <label>Language</label>
+        <div class="form-group">
+            <label>Language: </label>
             <select th:field="*{language}" th:errorclass="is-invalid">
                 <option th:each="language : ${T(kz.kaspi.kaspiproject.entities.Books.Language).values()}"
                         th:value="${language}" th:text="${language.name}"></option>
             </select>
-            <div th:if="${#fields.hasErrors('language')}" th:errors="*{language}">
+            <div class="error" th:if="${#fields.hasErrors('language')}" th:errors="*{language}">
             </div>
         </div>
 
-        <div>
-            <label>Price</label>
+        <div class="form-group">
+            <label>Price: </label>
             <input type="number" th:field="*{price}" th:errorclass="is-invalid" required>
-            <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+            <div class="error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
         </div>
 
-        <div>
-            <label>Quantity</label>
+        <div class="form-group">
+            <label>Quantity: </label>
             <input type="number" th:field="*{quantity}" th:errorclass="is-invalid" required>
-            <div th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>
+            <div class="error" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>
         </div>
-        <input type="submit" value="Save">
+        <button type="submit" class="btn btn-default">Save</button>
     </form>
 </body>
 </html>

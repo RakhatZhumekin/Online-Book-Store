@@ -25,10 +25,10 @@ public class BooksDTO {
     @NotNull(message = "Give language")
     private Language language;
 
-    @Min(value = 1, message = "Price can't be less than 1")
+    @Min(value = 1, message = "Price cannot be less than 1")
     private int price;
 
-    @Min(value = 0, message = "Quantity can't be less than 0")
+    @Min(value = 0, message = "Quantity cannot be less than 0")
     private int quantity;
 
     public BooksDTO() {
