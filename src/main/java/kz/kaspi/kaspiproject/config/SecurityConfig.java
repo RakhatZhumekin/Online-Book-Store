@@ -41,10 +41,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 usernameParameter("username").
                 passwordParameter("password").
                 defaultSuccessUrl("/", true).and()
-                .exceptionHandling().accessDeniedPage("/error").and()
                 .logout().logoutUrl("/logout").
                 logoutSuccessUrl("/").permitAll();
     }
+
+    //                .exceptionHandling().accessDeniedPage("/error").and()
 
     @Bean
     public PasswordEncoder passwordEncoder() {

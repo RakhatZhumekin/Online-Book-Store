@@ -16,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -32,8 +33,12 @@ public class BooksController {
     SectionsService sectionsService;
 
     @GetMapping
-    public String list(Model model) {
-        return returnList(model);
+    public String list(@RequestParam(value = "section", required = false) String sectionName,
+                       @RequestParam(value = "author", required = false) String authorName,
+                       @RequestParam(value = "language", required = false) Language language,
+                       @RequestParam(value = "status", required = false) Status status,
+                       Model model) {
+        return returnList(sectionName, authorName, language, status, model);
     }
 
     @ModelAttribute("allAuthors")
@@ -120,7 +125,7 @@ public class BooksController {
 
         booksService.deleteById(id);
 
-        return returnList(model);
+        return returnList(null, null, null, null, model);
     }
 
     @GetMapping("/update")
@@ -161,11 +166,122 @@ public class BooksController {
         currentBook.setStatus(status);
 
         booksService.save(currentBook);
-        return returnList(model);
+        return returnList(null, null, null, null, model);
     }
 
-    private String returnList(Model model) {
+    private String returnList(String sectionName, String authorName, Language language, Status status, Model model) {
         List<Books> books = booksService.findAll();
+        StringBuilder title = new StringBuilder("All Books");
+
+        if (status != null) {
+            if (status == Status.AVAILABLE || status == Status.SOLD) {
+                title = new StringBuilder("All " + status.getName() + " Books");
+                books = booksService.findAllByStatus(status);
+            }
+            else {
+                model.addAttribute("description", "Error accessing given status");
+                model.addAttribute("cause", "The status with the name " + status + " does not exist");
+                return "books/error";
+            }
+        }
+
+        if (sectionName != null) {
+            if (sectionsService.findByName(sectionName) != null) {
+                if (status != null) {
+                    books = booksService.findAllBySectionAndStatus(sectionsService.findByName(sectionName),
+                            status);
+                }
+                else {
+                    books = booksService.findAllBySection(sectionsService.findByName(sectionName));
+                }
+                title.append(" from section " + sectionName);
+            }
+            else {
+                model.addAttribute("description", "Error accessing given section");
+                model.addAttribute("cause", "The section with the name " + sectionName + " does not exist");
+                return "books/error";
+            }
+        }
+
+        if (authorName != null){
+            if (authorsService.findByName(authorName) != null) {
+                if (sectionName != null) {
+                    if (status != null) {
+                        books = booksService.findAllBySectionAndAuthorAndStatus(sectionsService.findByName(sectionName),
+                                authorsService.findByName(authorName), status);
+                    }
+                    else {
+                        books = booksService.findAllBySectionAndAuthor(sectionsService.findByName(sectionName), authorsService.findByName(authorName));
+                    }
+                    title.append(" and from author " + authorName);
+                }
+                else {
+                    if (status != null) {
+                        books = booksService.findAllByAuthorAndStatus(authorsService.findByName(authorName),
+                                status);
+                    }
+                    else {
+                        books = booksService.findAllByAuthor(authorsService.findByName(authorName));
+                    }
+
+                    title.append(" from author " + authorName);
+                }
+            }
+            else {
+                model.addAttribute("description", "Error accessing given author");
+                model.addAttribute("cause", "The author with the name " + authorName + " does not exist");
+                return "books/error";
+            }
+        }
+
+        if (language != null) {
+            if (language == Language.ENGLISH || language == Language.KAZAKH || language == Language.RUSSIAN) {
+                title.append(" in " + language.getName());
+                if (authorName != null) {
+                    if (sectionName != null) {
+                        if (status != null) {
+                            books = booksService.findAllBySectionAndAuthorAndLanguageAndStatus(sectionsService.findByName(sectionName),
+                                    authorsService.findByName(authorName), language, status);
+                        }
+                        else {
+                            books = booksService.findAllBySectionAndAuthorAndLanguage(sectionsService.findByName(sectionName),
+                                    authorsService.findByName(authorName), language);
+                        }
+                    }
+                    else {
+                        if (status != null) {
+                            books = booksService.findAllByAuthorAndLanguageAndStatus(authorsService.findByName(authorName),
+                                    language, status);
+                        }
+                        else {
+                            books = booksService.findAllByAuthorAndLanguage(authorsService.findByName(authorName), language);
+                        }
+                    }
+                }
+                else if (sectionName != null) {
+                    if (status != null) {
+                        books = booksService.findAllBySectionAndLanguageAndStatus(sectionsService.findByName(sectionName),
+                                language, status);
+                    }
+                    books = booksService.findAllBySectionAndLanguage(sectionsService.findByName(sectionName), language);
+                }
+                else {
+                    if (status != null) {
+                        books = booksService.findAllByLanguageAndStatus(language, status);
+                    }
+                    else {
+                        books = booksService.findAllByLanguage(language);
+                    }
+                }
+            }
+            else {
+                model.addAttribute("description", "Error accessing given language");
+                model.addAttribute("cause", "The language with the name " + language + " does not exist");
+                return "books/error";
+            }
+        }
+
+        model.addAttribute("title", title.toString());
         model.addAttribute("books", books);
         return "books/list";
     }

@@ -1,5 +1,6 @@
 package kz.kaspi.kaspiproject.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;

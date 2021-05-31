@@ -10,38 +10,76 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <div class="links">
-        <a th:href="@{/}">Main page</a>
-        <a th:href="@{/books/new}" sec:authorize="hasAuthority('admin')">Add new book</a>
+    <div class="sidebar">
+        <form th:action="@{/books}" method="get">
+            <label id="sections">Sections</label>
+            <ul>
+                <li th:each="section: ${allSections}">
+                    <input type="radio" th:value="${section.name}" th:name="section" th:id="${section.id}"/>
+                    <label th:for="${section.id}" th:text="${section.name}" class="label"></label>
+                </li>
+            </ul>
+            <label id="authors">Authors</label>
+            <ul>
+                <li th:each="author: ${allAuthors}">
+                    <input type="radio" th:value="${author.name}" th:name="author" th:id="${author.id}"/>
+                    <label th:for="${author.id}" th:text="${author.name}" class="label"></label>
+                </li>
+            </ul>
+            <label id="languages">Languages</label>
+            <ul>
+                <li th:each="language : ${T(kz.kaspi.kaspiproject.entities.Books.Language).values()}">
+                    <input type="radio" th:value="${language}" th:name="language" th:id="${language.name}"/>
+                    <label th:for="${language.name}" th:text="${language.name}" class="label"></label>
+                </li>
+            </ul>
+            <label id="status">Status</label>
+            <ul>
+                <li th:each="status : ${T(kz.kaspi.kaspiproject.entities.Books.Status).values()}">
+                    <input type="radio" th:value="${status}" th:name="status" th:id="${status.name}"/>
+                    <label th:for="${status.name}" th:text="${status.name}" class="label"></label>
+                </li>
+            </ul>
+            <div id="button">
+                <button type="submit" class="btn btn-default">Filter</button>
+            </div>
+        </form>
     </div>
-    <h1>All books</h1>
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <td>ID</td>
-                <td>Name</td>
-                <td>Author</td>
-                <td>Section</td>
-                <td>Language</td>
-                <td>Price</td>
-                <td>Quantity</td>
-                <td>Status</td>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="book: ${books}">
-                <td th:text="${book.id}">1</td>
-                <td th:text="${book.name}">Bob</td>
-                <td th:text="${book.author.name}">Picasso</td>
-                <td th:text="${book.section.name}"></td>
-                <td th:text="${book.language.name}"></td>
-                <td th:text="${book.price}"></td>
-                <td th:text="${book.quantity}"></td>
-                <td th:text="${book.status.name}"></td>
-                <td sec:authorize="hasAuthority('admin')"><a th:href="@{/books/{id}(id=${book.id})}">Update</a></td>
-                <td sec:authorize="hasAuthority('admin')"><a th:href="@{/books/delete(id=${book.id})}">Delete</a></td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="main">
+        <div class="links">
+            <a th:href="@{/}">Main page</a>
+            <a th:href="@{/books}">Default list</a>
+            <a th:href="@{/books/new}" sec:authorize="hasAuthority('admin')">Add new book</a>
+        </div>
+        <h1 th:text="${title}">Page</h1>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <td sec:authorize="hasAuthority('admin')">ID</td>
+                    <td>Name</td>
+                    <td>Author</td>
+                    <td>Section</td>
+                    <td>Language</td>
+                    <td>Price</td>
+                    <td>Quantity</td>
+                    <td>Status</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="book: ${books}">
+                    <td sec:authorize="hasAuthority('admin')" th:text="${book.id}">1</td>
+                    <td th:text="${book.name}">Bob</td>
+                    <td th:text="${book.author.name}">Picasso</td>
+                    <td th:text="${book.section.name}"></td>
+                    <td th:text="${book.language.name}"></td>
+                    <td th:text="${book.price}"></td>
+                    <td th:text="${book.quantity}"></td>
+                    <td th:text="${book.status.name}"></td>
+                    <td sec:authorize="hasAuthority('admin')"><a th:href="@{/books/{id}(id=${book.id})}">Update</a></td>
+                    <td sec:authorize="hasAuthority('admin')"><a th:href="@{/books/delete(id=${book.id})}">Delete</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

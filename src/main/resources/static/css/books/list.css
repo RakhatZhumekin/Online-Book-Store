@@ -1,7 +1,7 @@
 h1 {
     text-align: center;
     color: black;
-    font-size: 30px;
+    font-size: 25px;
 }
 
 table {
@@ -16,4 +16,51 @@ table {
     display: flex;
     justify-content: space-around;
     font-size: 20px;
+}
+
+.sidebar {
+    height: 100%;
+    width: 160px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+.sidebar * {
+    padding-bottom: 5px;
+}
+
+.sidebar #sections,
+.sidebar #authors,
+.sidebar #languages,
+.sidebar #status {
+    text-align: center;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+}
+
+.sidebar .label {
+    font-size: 15px;
+    color: #818181;
+}
+
+.sidebar li {
+    list-style-type: none;
+}
+
+.sidebar form label:hover {
+    color: #f1f1f1;
+}
+
+.main {
+    margin-left: 160px;
+}
+
+#button {
+    text-align: center;
 }
