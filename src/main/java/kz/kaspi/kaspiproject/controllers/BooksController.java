@@ -37,8 +37,47 @@ public class BooksController {
                        @RequestParam(value = "author", required = false) String authorName,
                        @RequestParam(value = "language", required = false) Language language,
                        @RequestParam(value = "status", required = false) Status status,
-                       Model model) {
-        return returnList(sectionName, authorName, language, status, model);
+                       @RequestParam(value = "from", required = false) String from,
+                       @RequestParam(value = "to", required = false) String to, Model model) {
+
+        if (from == null) {
+            if (to == null) {
+                return returnList(sectionName, authorName, language, status, null, null, model);
+            }
+            else {
+                if (to.isEmpty()) {
+                    return returnList(sectionName, authorName, language, status, null, null, model);
+                }
+                else {
+                    return returnList(sectionName, authorName, language, status, null, to, model);
+                }
+            }
+        }
+        else if (to == null) {
+            if (from.isEmpty()) {
+                return returnList(sectionName, authorName, language, status, null, null, model);
+            }
+            else {
+                return returnList(sectionName, authorName, language, status, from, null, model);
+            }
+        }
+
+        if (from.isEmpty()) {
+            if (to.isEmpty()) {
+                return returnList(sectionName, authorName, language, status, null, null, model);
+            } else {
+                return returnList(sectionName, authorName, language, status, null, to, model);
+            }
+        }
+        else {
+            if (to.isEmpty()) {
+                return returnList(sectionName, authorName, language, status, from, null, model);
+            }
+            else {
+                System.out.println("Both from and to are given");
+                return returnList(sectionName, authorName, language, status, from, to, model);
+            }
+        }
     }
 
     @ModelAttribute("allAuthors")
@@ -125,7 +164,7 @@ public class BooksController {
 
         booksService.deleteById(id);
 
-        return returnList(null, null, null, null, model);
+        return returnList(null, null, null, null, null, null, model);
     }
 
     @GetMapping("/update")
@@ -166,10 +205,10 @@ public class BooksController {
         currentBook.setStatus(status);
 
         booksService.save(currentBook);
-        return returnList(null, null, null, null, model);
+        return returnList(null, null, null, null, null, null, model);
     }
 
-    private String returnList(String sectionName, String authorName, Language language, Status status, Model model) {
+    private String returnList(String sectionName, String authorName, Language language, Status status, String from, String to, Model model) {
         List<Books> books = booksService.findAll();
         StringBuilder title = new StringBuilder("All Books");
 
@@ -263,7 +302,9 @@ public class BooksController {
                         books = booksService.findAllBySectionAndLanguageAndStatus(sectionsService.findByName(sectionName),
                                 language, status);
                     }
-                    books = booksService.findAllBySectionAndLanguage(sectionsService.findByName(sectionName), language);
+                    else {
+                        books = booksService.findAllBySectionAndLanguage(sectionsService.findByName(sectionName), language);
+                    }
                 }
                 else {
                     if (status != null) {
@@ -278,6 +319,248 @@ public class BooksController {
                 model.addAttribute("description", "Error accessing given language");
                 model.addAttribute("cause", "The language with the name " + language + " does not exist");
                 return "books/error";
+            }
+        }
+
+        if (from != null) {
+            if (!from.isEmpty()) {
+                if (Integer.parseInt(from) > 0) {
+                    title.append(" from " + from + " KZT");
+                    if (to != null) {
+                        if (!to.isEmpty()) {
+                            if (Integer.parseInt(to) > 0 && Integer.parseInt(from) <= Integer.parseInt(to)) {
+                                title.append(" up to " + to + " KZT");
+                                if (status != null) {
+                                    if (language != null) {
+                                        if (authorName != null) {
+                                            if (sectionName != null) {
+                                                books = booksService.findAllBySectionAndAuthorAndLanguageAndStatusAndPriceBetween(sectionsService.findByName(sectionName),
+                                                        authorsService.findByName(authorName), language, status, Integer.parseInt(from), Integer.parseInt(to));
+                                            } else {
+                                                books = booksService.findAllByAuthorAndLanguageAndStatusAndPriceBetween(authorsService.findByName(authorName),
+                                                        language, status, Integer.parseInt(from), Integer.parseInt(to));
+                                            }
+                                        } else {
+                                            if (sectionName != null) {
+                                                books = booksService.findAllBySectionAndLanguageAndStatusAndPriceBetween(sectionsService.findByName(sectionName),
+                                                        language, status, Integer.parseInt(from), Integer.parseInt(to));
+                                            } else {
+                                                books = booksService.findAllByLanguageAndStatusAndPriceBetween(language, status, Integer.parseInt(from), Integer.parseInt(to));
+                                            }
+                                        }
+                                    } else {
+                                        if (authorName != null) {
+                                            if (sectionName != null) {
+                                                books = booksService.findAllBySectionAndAuthorAndStatusAndPriceBetween(sectionsService.findByName(sectionName),
+                                                        authorsService.findByName(authorName), status, Integer.parseInt(from), Integer.parseInt(to));
+                                            } else {
+                                                books = booksService.findAllByAuthorAndStatusAndPriceBetween(authorsService.findByName(authorName),
+                                                        status, Integer.parseInt(from), Integer.parseInt(to));
+                                            }
+                                        } else {
+                                            if (sectionName != null) {
+                                                books = booksService.findAllBySectionAndStatusAndPriceBetween(sectionsService.findByName(sectionName),
+                                                        status, Integer.parseInt(from), Integer.parseInt(to));
+                                            } else {
+                                                books = booksService.findAllByStatusAndPriceBetween(status, Integer.parseInt(from), Integer.parseInt(to));
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    if (language != null) {
+                                        if (authorName != null) {
+                                            if (sectionName != null) {
+                                                books = booksService.findAllBySectionAndAuthorAndLanguageAndPriceBetween(sectionsService.findByName(sectionName),
+                                                        authorsService.findByName(authorName), language, Integer.parseInt(from), Integer.parseInt(to));
+                                            } else {
+                                                books = booksService.findAllByAuthorAndLanguageAndPriceBetween(authorsService.findByName(authorName),
+                                                        language, Integer.parseInt(from), Integer.parseInt(to));
+                                            }
+                                        } else {
+                                            if (sectionName != null) {
+                                                books = booksService.findAllBySectionAndLanguageAndPriceBetween(sectionsService.findByName(sectionName),
+                                                        language, Integer.parseInt(from), Integer.parseInt(to));
+                                            } else {
+                                                books = booksService.findAllByLanguageAndPriceBetween(language, Integer.parseInt(from), Integer.parseInt(to));
+                                            }
+                                        }
+                                    } else {
+                                        if (authorName != null) {
+                                            if (sectionName != null) {
+                                                books = booksService.findAllBySectionAndAuthorAndPriceBetween(sectionsService.findByName(sectionName),
+                                                        authorsService.findByName(authorName), Integer.parseInt(from), Integer.parseInt(to));
+                                            } else {
+                                                books = booksService.findAllByAuthorAndPriceBetween(authorsService.findByName(authorName),
+                                                        Integer.parseInt(from), Integer.parseInt(to));
+                                            }
+                                        } else {
+                                            if (sectionName != null) {
+                                                books = booksService.findAllBySectionAndPriceBetween(sectionsService.findByName(sectionName),
+                                                        Integer.parseInt(from), Integer.parseInt(to));
+                                            } else {
+                                                books = booksService.findAllByPriceBetween(Integer.parseInt(from), Integer.parseInt(to));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (status != null) {
+                            if (language != null) {
+                                if (authorName != null) {
+                                    if (sectionName != null) {
+                                        books = booksService.findAllBySectionAndAuthorAndLanguageAndStatusAndPriceGreaterThanEqual(sectionsService.findByName(sectionName),
+                                                authorsService.findByName(authorName), language, status, Integer.parseInt(from));
+                                    } else {
+                                        books = booksService.findAllByAuthorAndLanguageAndStatusAndPriceGreaterThanEqual(authorsService.findByName(authorName),
+                                                language, status, Integer.parseInt(from));
+                                    }
+                                } else {
+                                    if (sectionName != null) {
+                                        books = booksService.findAllBySectionAndLanguageAndStatusAndPriceGreaterThanEqual(sectionsService.findByName(sectionName),
+                                                language, status, Integer.parseInt(from));
+                                    } else {
+                                        books = booksService.findAllByLanguageAndStatusAndPriceGreaterThanEqual(language, status, Integer.parseInt(from));
+                                    }
+                                }
+                            } else {
+                                if (authorName != null) {
+                                    if (sectionName != null) {
+                                        books = booksService.findAllBySectionAndAuthorAndStatusAndPriceGreaterThanEqual(sectionsService.findByName(sectionName),
+                                                authorsService.findByName(authorName), status, Integer.parseInt(from));
+                                    } else {
+                                        books = booksService.findAllByAuthorAndStatusAndPriceGreaterThanEqual(authorsService.findByName(authorName),
+                                                status, Integer.parseInt(from));
+                                    }
+                                } else {
+                                    if (sectionName != null) {
+                                        books = booksService.findAllBySectionAndStatusAndPriceGreaterThanEqual(sectionsService.findByName(sectionName),
+                                                status, Integer.parseInt(from));
+                                    } else {
+                                        books = booksService.findAllByStatusAndPriceGreaterThanEqual(status, Integer.parseInt(from));
+                                    }
+                                }
+                            }
+                        } else {
+                            if (language != null) {
+                                if (authorName != null) {
+                                    if (sectionName != null) {
+                                        books = booksService.findAllBySectionAndAuthorAndLanguageAndPriceGreaterThanEqual(sectionsService.findByName(sectionName),
+                                                authorsService.findByName(authorName), language, Integer.parseInt(from));
+                                    } else {
+                                        books = booksService.findAllByAuthorAndLanguageAndPriceGreaterThanEqual(authorsService.findByName(authorName),
+                                                language, Integer.parseInt(from));
+                                    }
+                                } else {
+                                    if (sectionName != null) {
+                                        books = booksService.findAllBySectionAndLanguageAndPriceGreaterThanEqual(sectionsService.findByName(sectionName),
+                                                language, Integer.parseInt(from));
+                                    } else {
+                                        books = booksService.findAllByLanguageAndPriceGreaterThanEqual(language, Integer.parseInt(from));
+                                    }
+                                }
+                            } else {
+                                if (authorName != null) {
+                                    if (sectionName != null) {
+                                        books = booksService.findAllBySectionAndAuthorAndPriceGreaterThanEqual(sectionsService.findByName(sectionName),
+                                                authorsService.findByName(authorName), Integer.parseInt(from));
+                                    } else {
+                                        books = booksService.findAllByAuthorAndPriceGreaterThanEqual(authorsService.findByName(authorName),
+                                                Integer.parseInt(from));
+                                    }
+                                } else {
+                                    if (sectionName != null) {
+                                        books = booksService.findAllBySectionAndPriceGreaterThanEqual(sectionsService.findByName(sectionName),
+                                                Integer.parseInt(from));
+                                    } else {
+                                        books = booksService.findAllByPriceGreaterThanEqual(Integer.parseInt(from));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else if (to != null) {
+            if (!to.isEmpty()) {
+                if (Integer.parseInt(to) > 0) {
+                    title.append(" up to " + to + " KZT");
+                    if (status != null) {
+                        if (language != null) {
+                            if (authorName != null) {
+                                if (sectionName != null) {
+                                    books = booksService.findAllBySectionAndAuthorAndLanguageAndStatusAndPriceLessThanEqual(sectionsService.findByName(sectionName),
+                                            authorsService.findByName(authorName), language, status, Integer.parseInt(to));
+                                } else {
+                                    books = booksService.findAllByAuthorAndLanguageAndStatusAndPriceLessThanEqual(authorsService.findByName(authorName),
+                                            language, status, Integer.parseInt(to));
+                                }
+                            } else {
+                                if (sectionName != null) {
+                                    books = booksService.findAllBySectionAndLanguageAndStatusAndPriceLessThanEqual(sectionsService.findByName(sectionName),
+                                            language, status, Integer.parseInt(to));
+                                } else {
+                                    books = booksService.findAllByLanguageAndStatusAndPriceLessThanEqual(language, status, Integer.parseInt(to));
+                                }
+                            }
+                        } else {
+                            if (authorName != null) {
+                                if (sectionName != null) {
+                                    books = booksService.findAllBySectionAndAuthorAndStatusAndPriceLessThanEqual(sectionsService.findByName(sectionName),
+                                            authorsService.findByName(authorName), status, Integer.parseInt(to));
+                                } else {
+                                    books = booksService.findAllByAuthorAndStatusAndPriceLessThanEqual(authorsService.findByName(authorName),
+                                            status, Integer.parseInt(to));
+                                }
+                            } else {
+                                if (sectionName != null) {
+                                    books = booksService.findAllBySectionAndStatusAndPriceLessThanEqual(sectionsService.findByName(sectionName),
+                                            status, Integer.parseInt(to));
+                                } else {
+                                    books = booksService.findAllByStatusAndPriceLessThanEqual(status, Integer.parseInt(to));
+                                }
+                            }
+                        }
+                    } else {
+                        if (language != null) {
+                            if (authorName != null) {
+                                if (sectionName != null) {
+                                    books = booksService.findAllBySectionAndAuthorAndLanguageAndPriceLessThanEqual(sectionsService.findByName(sectionName),
+                                            authorsService.findByName(authorName), language, Integer.parseInt(to));
+                                } else {
+                                    books = booksService.findAllByAuthorAndLanguageAndPriceLessThanEqual(authorsService.findByName(authorName),
+                                            language, Integer.parseInt(to));
+                                }
+                            } else {
+                                if (sectionName != null) {
+                                    books = booksService.findAllBySectionAndLanguageAndPriceLessThanEqual(sectionsService.findByName(sectionName),
+                                            language, Integer.parseInt(to));
+                                } else {
+                                    books = booksService.findAllByLanguageAndPriceLessThanEqual(language, Integer.parseInt(to));
+                                }
+                            }
+                        } else {
+                            if (authorName != null) {
+                                if (sectionName != null) {
+                                    books = booksService.findAllBySectionAndAuthorAndPriceLessThanEqual(sectionsService.findByName(sectionName),
+                                            authorsService.findByName(authorName), Integer.parseInt(to));
+                                } else {
+                                    books = booksService.findAllByAuthorAndPriceLessThanEqual(authorsService.findByName(authorName),
+                                            Integer.parseInt(to));
+                                }
+                            } else {
+                                if (sectionName != null) {
+                                    books = booksService.findAllBySectionAndPriceLessThanEqual(sectionsService.findByName(sectionName),
+                                            Integer.parseInt(to));
+                                } else {
+                                    books = booksService.findAllByPriceLessThanEqual(Integer.parseInt(to));
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 

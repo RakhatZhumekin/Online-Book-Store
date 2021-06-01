@@ -20,7 +20,7 @@ table {
 
 .sidebar {
     height: 100%;
-    width: 160px;
+    width: 200px;
     position: fixed;
     z-index: 1;
     top: 0;
@@ -37,7 +37,8 @@ table {
 .sidebar #sections,
 .sidebar #authors,
 .sidebar #languages,
-.sidebar #status {
+.sidebar #status,
+.sidebar #price {
     text-align: center;
     font-size: 25px;
     color: #818181;
@@ -51,16 +52,33 @@ table {
 
 .sidebar li {
     list-style-type: none;
+    color: #818181;
 }
 
-.sidebar form label:hover {
+.sidebar form .label:hover {
     color: #f1f1f1;
 }
 
+.sidebar form label {
+    font-size: 15px;
+    color: #818181;
+}
+
 .main {
-    margin-left: 160px;
+    margin-left: 200px;
 }
 
 #button {
     text-align: center;
+    margin-top: 10px;
+}
+
+input[type="number"] {
+    width: 70px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
