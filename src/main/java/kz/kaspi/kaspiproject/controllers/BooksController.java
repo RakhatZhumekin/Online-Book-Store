@@ -38,7 +38,22 @@ public class BooksController {
                        @RequestParam(value = "language", required = false) Language language,
                        @RequestParam(value = "status", required = false) Status status,
                        @RequestParam(value = "from", required = false) String from,
-                       @RequestParam(value = "to", required = false) String to, Model model) {
+                       @RequestParam(value = "to", required = false) String to,
+                       @RequestParam(value = "name", required = false) String name, Model model) {
+
+        if (name != null) {
+            System.out.println("Not null");
+            if (!name.isBlank()) {
+                System.out.println("Not blank");
+                return returnListByName(name, model);
+            }
+            else {
+                System.out.println("Blank");
+            }
+        }
+        else {
+            System.out.println("Null");
+        }
 
         if (from == null) {
             if (to == null) {
@@ -565,6 +580,14 @@ public class BooksController {
         }
 
         model.addAttribute("title", title.toString());
+        model.addAttribute("books", books);
+        return "books/list";
+    }
+
+    private String returnListByName(String name, Model model) {
+        List<Books> books = new ArrayList<>();
+        books.add(booksService.findByName(name));
+        model.addAttribute("title", "Result for '" + name + "'");
         model.addAttribute("books", books);
         return "books/list";
     }

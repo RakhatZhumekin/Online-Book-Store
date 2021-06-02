@@ -38,7 +38,8 @@ table {
 .sidebar #authors,
 .sidebar #languages,
 .sidebar #status,
-.sidebar #price {
+.sidebar #price,
+.sidebar #name {
     text-align: center;
     font-size: 25px;
     color: #818181;
@@ -68,13 +69,20 @@ table {
     margin-left: 200px;
 }
 
-#button {
+.button {
     text-align: center;
     margin-top: 10px;
 }
 
 input[type="number"] {
     width: 70px;
+}
+
+#namebar {
+    width: 150px;
+    display: block;
+    margin: 0 auto;
+    color: #818181;
 }
 
 input::-webkit-outer-spin-button,
