@@ -1,6 +1,8 @@
 package kz.kaspi.kaspiproject.entities;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Users {
@@ -19,6 +21,9 @@ public class Users {
 
     @Column
     private String password;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
+    private List<BasketItem> basketItems = new ArrayList<>();
 
     public Users() {
     }

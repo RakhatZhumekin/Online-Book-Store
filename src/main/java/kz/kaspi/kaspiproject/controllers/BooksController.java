@@ -1,30 +1,21 @@
 package kz.kaspi.kaspiproject.controllers;
 
 import kz.kaspi.kaspiproject.dto.BooksDTO;
-import kz.kaspi.kaspiproject.entities.Authors;
-import kz.kaspi.kaspiproject.entities.Books;
+import kz.kaspi.kaspiproject.entities.*;
 import kz.kaspi.kaspiproject.entities.Books.Language;
 import kz.kaspi.kaspiproject.entities.Books.Status;
-import kz.kaspi.kaspiproject.entities.Sections;
-import kz.kaspi.kaspiproject.services.AuthorsService;
-import kz.kaspi.kaspiproject.services.BooksService;
-import kz.kaspi.kaspiproject.services.SectionsService;
+import kz.kaspi.kaspiproject.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -39,6 +30,12 @@ public class BooksController {
 
     @Autowired
     SectionsService sectionsService;
+
+    @Autowired
+    BasketService basketService;
+
+    @Autowired
+    UsersService usersService;
 
     @GetMapping
     public String list(@RequestParam(value = "section", required = false) String sectionName,
@@ -95,10 +92,36 @@ public class BooksController {
         }
     }
 
-    @GetMapping("/smth")
-    public String example(@RequestParam(value = "num") int num,
+    @GetMapping("/add")
+    public String addToCart(@RequestParam(value = "quantity") int quantity,
                           @RequestParam(value = "name") String name, HttpServletRequest httpServletRequest) {
-        System.out.println("Added " + num + " copies of '" + name + "' to cart");
+
+        Books book = booksService.findByName(name);
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails)principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        Users user = usersService.findByName(username);
+
+        BasketItem currentItem = basketService.findByBookAndUser(book, user);
+        if (currentItem != null) {
+            currentItem.setQuantity(currentItem.getQuantity() + quantity);
+            basketService.save(currentItem);
+        }
+        else {
+            basketService.save(new BasketItem(user, book, quantity));
+        }
+
+        book.setQuantity(book.getQuantity() - quantity);
+        booksService.save(book);
+
+        System.out.println("Added " + quantity + " copies of '" + name + "' to cart");
         return "redirect:" + httpServletRequest.getHeader("Referer");
     }
 

@@ -1,6 +1,8 @@
 package kz.kaspi.kaspiproject.entities;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Books {
@@ -34,6 +36,9 @@ public class Books {
     @Column
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "book", fetch = FetchType.EAGER)
+    private List<BasketItem> basketItems = new ArrayList<>();
 
     public Books() {
 
