@@ -109,7 +109,7 @@ public class BooksController {
 
         Users user = usersService.findByName(username);
 
-        BasketItem currentItem = basketService.findByBookAndUser(book, user);
+        BasketItem currentItem = basketService.findByBookAndUserAndActive(book, user, true);
         if (currentItem != null) {
             currentItem.setQuantity(currentItem.getQuantity() + quantity);
             basketService.save(currentItem);
@@ -121,7 +121,6 @@ public class BooksController {
         book.setQuantity(book.getQuantity() - quantity);
         booksService.save(book);
 
-        System.out.println("Added " + quantity + " copies of '" + name + "' to cart");
         return "redirect:" + httpServletRequest.getHeader("Referer");
     }
 

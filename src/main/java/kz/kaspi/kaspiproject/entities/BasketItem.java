@@ -22,6 +22,9 @@ public class BasketItem {
     @Column
     private int quantity;
 
+    @Column
+    private boolean active = true;
+
     public BasketItem() {
     }
 
@@ -61,6 +64,14 @@ public class BasketItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override

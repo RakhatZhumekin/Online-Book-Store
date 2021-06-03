@@ -118,6 +118,14 @@ public class Books {
         this.status = status;
     }
 
+    public List<BasketItem> getBasketItems() {
+        return basketItems;
+    }
+
+    public void setBasketItems(List<BasketItem> basketItems) {
+        this.basketItems = basketItems;
+    }
+
     @Override
     public String toString() {
         return "Books{" +

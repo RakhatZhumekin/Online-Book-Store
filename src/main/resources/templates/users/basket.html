@@ -10,20 +10,52 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
+    <div class="links">
+        <a th:href="@{/}">Back to home page</a>
+    </div>
     <h1><span sec:authentication="name"></span>'s Basket</h1>
     <table class="table table-hover">
         <thead>
             <tr>
                 <td>Book name</td>
-                <td>Quantity</td>
+                <td>Book author</td>
+                <td>Book section</td>
+                <td>Book language</td>
+                <td>Amount for purchase</td>
+                <td>Price</td>
+                <td>Cost</td>
             </tr>
         </thead>
         <tbody>
-            <tr th:each="item: ${items}">
+            <tr th:each="item: ${items}" th:if="${item.active}">
                 <td th:text="${item.book.name}">Book</td>
+                <td th:text="${item.book.author.name}">Author</td>
+                <td th:text="${item.book.section.name}">Section</td>
+                <td th:text="${item.book.language.name}">Language</td>
                 <td th:text="${item.quantity}">2</td>
+                <td th:text="${item.book.price}">5</td>
+                <td>
+                    <th:block th:with="price = ${item.book.price}, num = ${item.quantity}, cost = ${price * num}">
+                        <p th:text="${cost}"></p>
+                    </th:block>
+                </td>
+                <td>
+                    <form th:action="@{/basket/remove}" method="get">
+                        <input type="hidden" th:value="${item.quantity}" th:name="quantity">
+                        <input type="hidden" th:value="${item.book.name}" th:name="book">
+                        <button type="submit" class="btn btn-default">Remove</button>
+                    </form>
+                </td>
             </tr>
         </tbody>
     </table>
+    <div th:unless="${#lists.isEmpty(items)}" class="button">
+        <form th:action="@{/basket/checkout}" method="get">
+            <div th:each="id: ${ids}">
+                <input type="hidden" th:value="${id}" th:name="list">
+            </div>
+            <button th:unless="${#lists.isEmpty(ids)}" type="submit" class="btn btn-success">Checkout</button>
+        </form>
+    </div>
 </body>
 </html>

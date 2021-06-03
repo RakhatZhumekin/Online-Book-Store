@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}"></title>
+    <link rel="stylesheet" href="../css/books/list.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="links">
+        <a th:href="@{/}">Back to main page</a>
+    </div>
+    <h1>Details of order <span th:text="${id}"></span> of user <span sec:authentication="name"></span></h1>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <td>Book Name</td>
+            <td>Book Author</td>
+            <td>Book Section</td>
+            <td>Book Language</td>
+            <td>Amount bought</td>
+            <td>Price</td>
+            <td>Cost</td>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="item: ${items}">
+            <td th:text="${item.book.name}">Book</td>
+            <td th:text="${item.book.author.name}">Author</td>
+            <td th:text="${item.book.section.name}">Section</td>
+            <td th:text="${item.book.language.name}">Language</td>
+            <td th:text="${item.quantity}">2</td>
+            <td th:text="${item.book.price}">5</td>
+            <td>
+                <th:block th:with="price = ${item.book.price}, num = ${item.quantity}, product = ${price * num}">
+                    <p th:text="${product}"></p>
+                </th:block>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <h2>Total cost of the order: <span th:text="${cost}"></span></h2>
+</body>
+</html>

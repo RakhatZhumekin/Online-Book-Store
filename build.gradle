@@ -14,6 +14,7 @@ repositories {
 }
 
 dependencies {
+    implementation group: 'com.vladmihalcea', name: 'hibernate-types-52', version: '2.11.1'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'

@@ -15,5 +15,7 @@ public interface BasketRepository extends JpaRepository<BasketItem, Long> {
 
     public BasketItem findByBookAndUser(Books book, Users user);
 
-    public List<BasketItem> deleteAllByUser(Users user);
+    public BasketItem findByBookAndUserAndActive(Books book, Users user, boolean active);
+
+    public void deleteByBookAndUser(Books book, Users user);
 }
