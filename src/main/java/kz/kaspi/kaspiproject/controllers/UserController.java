@@ -56,13 +56,16 @@ public class UserController {
         if (usersService.findByName(usersDTO.getName().trim()) != null)
             return "users/error";
 
+        String decodedPassword = usersDTO.getPassword();
+
         Users user = new Users();
         user.setName(usersDTO.getName().trim());
         user.setRole(usersDTO.getRole());
         user.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
 
         usersService.save(user);
-        System.out.println(user.getPassword());
+
+        securityService.autoLogin(user.getName(), decodedPassword);
 
         return "redirect:/";
     }
@@ -70,10 +73,5 @@ public class UserController {
     @GetMapping("/login")
     public String loginForm(Model model) {
         return "users/login";
-    }
-
-    @GetMapping("/error")
-    public String errorPage(Model model) {
-        return "error";
     }
 }

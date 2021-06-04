@@ -72,6 +72,16 @@
             <a th:href="@{/books/new}" sec:authorize="hasAuthority('admin')">Add new book</a>
             <a sec:authorize="hasAuthority('user')" th:href="@{/basket}">Basket</a>
             <a sec:authorize="hasAuthority('user')" th:href="@{/orders}">Orders</a>
+            <div sec:authorize="!hasAuthority('admin')">
+                <a sec:authorize="!hasAuthority('user')" th:href="@{/signup/login}" id="login">Login</a>
+                <a sec:authorize="!hasAuthority('user')" th:href="@{/signup}" id="register">Register</a>
+            </div>
+            <div sec:authorize="hasAuthority('user')" >
+                <h1 sec:authentication="name"></h1>
+                <form th:action="@{/logout}" method="POST">
+                    <button type="submit" class="btn btn-default">Logout</button>
+                </form>
+            </div>
         </div>
         <h1 th:text="${title}">Page</h1>
         <table class="table table-hover">

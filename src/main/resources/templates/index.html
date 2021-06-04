@@ -11,9 +11,10 @@
 </head>
 <body>
     <div class="header">
-        <a th:href="@{/authors}">Authors list</a>
-        <a th:href="@{/sections}">Sections list</a>
-        <a th:href="@{/books}">Books list</a>
+        <a sec:authorize="hasAuthority('admin')" th:href="@{/authors}">Authors list</a>
+        <a sec:authorize="hasAuthority('admin')" th:href="@{/sections}">Sections list</a>
+        <a sec:authorize="hasAuthority('admin')" th:href="@{/books}">Books list</a>
+        <a sec:authorize="!hasAuthority('admin')" th:href="@{/books}">Main page</a>
         <a sec:authorize="hasAuthority('user')" th:href="@{/basket}">Basket</a>
         <a sec:authorize="hasAuthority('user')" th:href="@{/orders}">Orders</a>
     </div>

@@ -18,6 +18,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private CustomLogoutSuccessHandler customLogoutSuccessHandler;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
@@ -30,23 +33,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/", "/signup/**", "/books", "/authors", "/sections").permitAll()
+        http.authorizeRequests().antMatchers("/", "/signup/**", "/books").permitAll()
                 .antMatchers("/books/add/**", "/basket/**", "/orders/**").hasAuthority("user")
-                .antMatchers("/authors/new", "/authors/{id}", "/authors/delete/{id}").hasAuthority("admin")
+                .antMatchers("/authors/new", "/authors/{id}", "/authors/delete/{id}", "/authors", "/sections").hasAuthority("admin")
                 .antMatchers("/sections/new", "/sections/{id}", "/sections/delete/{id}").hasAuthority("admin")
                 .antMatchers("/books/new", "/books/{id}", "/books/delete/{id}").hasAuthority("admin")
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll().
-                anyRequest().authenticated().and()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                .and()
                 .formLogin().permitAll().loginPage("/signup/login").
                 loginProcessingUrl("/login").
                 usernameParameter("username").
                 passwordParameter("password").
                 defaultSuccessUrl("/", true).and()
-                .logout().logoutUrl("/logout").
-                logoutSuccessUrl("/").permitAll();
+                .logout().logoutUrl("/logout")
+                .logoutSuccessHandler(customLogoutSuccessHandler);
     }
-
-    //                .exceptionHandling().accessDeniedPage("/error").and()
 
     @Bean
     public PasswordEncoder passwordEncoder() {

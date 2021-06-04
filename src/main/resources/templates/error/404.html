@@ -1,17 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Not enough privileges</title>
+    <title>404 Not Found</title>
     <link rel="stylesheet" href="../css/error.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1 sec:authorize="isAuthenticated()">It doesn't seem you have enough privileges, <span sec:authentication="name"></span></h1>
-    <h1 sec:authorize="!isAuthenticated()">You have not logged in.</h1>
+    <h1>Unfortunately, the page you requested does not exist.</h1>
     <div>
         <a th:href="@{/}">Back to home page</a>
     </div>
