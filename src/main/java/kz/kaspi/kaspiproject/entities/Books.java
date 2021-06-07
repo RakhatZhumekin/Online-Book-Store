@@ -37,6 +37,9 @@ public class Books {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Column
+    private boolean deleted = false;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "book", fetch = FetchType.EAGER)
     private List<BasketItem> basketItems = new ArrayList<>();
 
@@ -112,6 +115,14 @@ public class Books {
 
     public Status getStatus() {
         return status;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public void setStatus(Status status) {

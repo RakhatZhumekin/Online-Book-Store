@@ -35,9 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers("/", "/signup/**", "/books").permitAll()
                 .antMatchers("/books/add/**", "/basket/**", "/orders/**").hasAuthority("user")
-                .antMatchers("/authors/new", "/authors/{id}", "/authors/delete/{id}", "/authors", "/sections").hasAuthority("admin")
-                .antMatchers("/sections/new", "/sections/{id}", "/sections/delete/{id}").hasAuthority("admin")
-                .antMatchers("/books/new", "/books/{id}", "/books/delete/{id}").hasAuthority("admin")
+                .antMatchers("/authors/new", "/authors/{id}", "/authors/delete/**", "/authors", "/sections").hasAuthority("admin")
+                .antMatchers("/sections/new", "/sections/{id}", "/sections/delete/**").hasAuthority("admin")
+                .antMatchers("/books/new", "/books/{id}", "/books/delete/**", "/books/restore/**").hasAuthority("admin")
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .and()
                 .formLogin().permitAll().loginPage("/signup/login").

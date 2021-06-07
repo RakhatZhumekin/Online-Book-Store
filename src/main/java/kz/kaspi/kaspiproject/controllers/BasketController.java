@@ -79,7 +79,6 @@ public class BasketController {
 
         basketService.deleteById(basketItem.getId());
 
-        System.out.println(quantity + " of the book " + bookName + " was removed");
         return "redirect:" + httpServletRequest.getHeader("Referer");
     }
 

@@ -46,6 +46,13 @@ public class BooksController {
                        @RequestParam(value = "to", required = false) String to,
                        @RequestParam(value = "name", required = false) String name, Model model) {
 
+        if (getCurrentUser() != null) {
+            if (getCurrentUser().getRole().getName().equals("admin")) {
+                System.out.println(getCurrentUser().getRole().getName());
+                return returnListAdmin(model);
+            }
+        }
+
         if (name != null) {
             if (!name.isBlank()) {
                 return returnListByName(name, model);
@@ -98,28 +105,29 @@ public class BooksController {
 
         Books book = booksService.findByName(name);
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username;
+        if (!book.isDeleted()) {
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String username;
 
-        if (principal instanceof UserDetails) {
-            username = ((UserDetails)principal).getUsername();
-        } else {
-            username = principal.toString();
+            if (principal instanceof UserDetails) {
+                username = ((UserDetails) principal).getUsername();
+            } else {
+                username = principal.toString();
+            }
+
+            Users user = usersService.findByName(username);
+
+            BasketItem currentItem = basketService.findByBookAndUserAndActive(book, user, true);
+            if (currentItem != null) {
+                currentItem.setQuantity(currentItem.getQuantity() + quantity);
+                basketService.save(currentItem);
+            } else {
+                basketService.save(new BasketItem(user, book, quantity));
+            }
+
+            book.setQuantity(book.getQuantity() - quantity);
+            booksService.save(book);
         }
-
-        Users user = usersService.findByName(username);
-
-        BasketItem currentItem = basketService.findByBookAndUserAndActive(book, user, true);
-        if (currentItem != null) {
-            currentItem.setQuantity(currentItem.getQuantity() + quantity);
-            basketService.save(currentItem);
-        }
-        else {
-            basketService.save(new BasketItem(user, book, quantity));
-        }
-
-        book.setQuantity(book.getQuantity() - quantity);
-        booksService.save(book);
 
         return "redirect:" + httpServletRequest.getHeader("Referer");
     }
@@ -143,7 +151,7 @@ public class BooksController {
     @GetMapping("/{id}")
     public String findById(@PathVariable int id, Model model) {
         Books book = booksService.findById(id);
-        if (book == null) {
+        if (book == null || book.isDeleted()) {
             model.addAttribute("description", "Error finding the book");
             model.addAttribute("cause", "The book with the given id does not exist");
             return "authors/error";
@@ -169,7 +177,7 @@ public class BooksController {
             return "books/new";
         }
 
-        if (booksService.findByName(booksDTO.getName()) != null) {
+        if (booksService.findByName(booksDTO.getName()) != null || !booksService.findByName(booksDTO.getName()).isDeleted()) {
             model.addAttribute("description", "Error creating the book");
             model.addAttribute("cause", "The book with the given name already exists");
             return "books/error";
@@ -191,24 +199,34 @@ public class BooksController {
     @GetMapping("/delete")
     public String deleteById(@RequestParam(value = "id") int id, Model model) {
         Books book = booksService.findById(id);
-        if (book == null) {
+        if (book == null || book.isDeleted()) {
             model.addAttribute("description", "Error deleting the book");
-            model.addAttribute("cause", "The book with the given id does not exist");
+            model.addAttribute("cause", "The book with the id has already been deleted");
             return "books/error";
         }
 
-        Authors author = book.getAuthor();
-        Sections section = book.getSection();
+        book.setDeleted(true);
 
-        if (author != null)
-            author.getBooks().remove(book);
+        booksService.save(book);
 
-        if (section != null)
-            section.getBooks().remove(book);
+        return returnListAdmin(model);
+    }
 
-        booksService.deleteById(id);
+    @GetMapping("/restore")
+    public String restoreById(@RequestParam(value = "id") int id, Model model) {
+        Books book = booksService.findById(id);
 
-        return returnList(null, null, null, null, null, null, model);
+        if (!book.isDeleted()) {
+            model.addAttribute("description", "Error restoring the book");
+            model.addAttribute("cause", "The book with the given id isn't deleted");
+            return "books/error";
+        }
+
+        book.setDeleted(false);
+
+        booksService.save(book);
+
+        return returnListAdmin(model);
     }
 
     @GetMapping("/update")
@@ -249,11 +267,11 @@ public class BooksController {
         currentBook.setStatus(status);
 
         booksService.save(currentBook);
-        return returnList(null, null, null, null, null, null, model);
+        return returnListAdmin(model);
     }
 
     private String returnList(String sectionName, String authorName, Language language, Status status, String from, String to, Model model) {
-        List<Books> books = booksService.findAll();
+        List<Books> books = booksService.findAllByDeletedFalse();
         StringBuilder title = new StringBuilder("All Books");
 
         if (status != null) {
@@ -614,10 +632,28 @@ public class BooksController {
     }
 
     private String returnListByName(String name, Model model) {
-        List<Books> books = new ArrayList<>();
-        books.add(booksService.findByName(name));
+        List<Books> books = booksService.findByNameContaining(name);
         model.addAttribute("title", "Result for '" + name + "'");
         model.addAttribute("books", books);
         return "books/list";
+    }
+
+    private String returnListAdmin(Model model) {
+        List<Books> books = booksService.findAll();
+        model.addAttribute("books", books);
+        return "books/list";
+    }
+
+    private Users getCurrentUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails)principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        return usersService.findByName(username);
     }
 }
