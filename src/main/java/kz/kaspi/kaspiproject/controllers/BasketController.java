@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -68,7 +67,7 @@ public class BasketController {
 
         Users user = getCurrentUser();
 
-        BasketItem basketItem = basketService.findByBookAndUser(book, user);
+        BasketItem basketItem = basketService.findByBookAndUserAndActive(book, user, true);
 
         book.setQuantity(book.getQuantity() + quantity);
         booksService.save(book);

@@ -2,12 +2,12 @@ package kz.kaspi.kaspiproject.dto;
 
 import kz.kaspi.kaspiproject.entities.Authors;
 import kz.kaspi.kaspiproject.entities.Books.Language;
-import kz.kaspi.kaspiproject.entities.Books.Status;
 import kz.kaspi.kaspiproject.entities.Sections;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class BooksDTO {
     @NotNull(message = "Give ID")
@@ -30,6 +30,10 @@ public class BooksDTO {
 
     @Min(value = 0, message = "Quantity cannot be less than 0")
     private int quantity;
+
+    @NotBlank(message = "Give description")
+    @Size(min = 5, max = 200, message = "The description must be between 5 and 200 characters")
+    private String description;
 
     public BooksDTO() {
     }
@@ -88,5 +92,13 @@ public class BooksDTO {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

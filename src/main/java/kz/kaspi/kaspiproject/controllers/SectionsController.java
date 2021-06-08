@@ -1,9 +1,6 @@
 package kz.kaspi.kaspiproject.controllers;
 
-import kz.kaspi.kaspiproject.dto.AuthorsDTO;
 import kz.kaspi.kaspiproject.dto.SectionsDTO;
-import kz.kaspi.kaspiproject.entities.Authors;
-import kz.kaspi.kaspiproject.entities.Books;
 import kz.kaspi.kaspiproject.entities.Sections;
 import kz.kaspi.kaspiproject.services.BooksService;
 import kz.kaspi.kaspiproject.services.SectionsService;
@@ -14,8 +11,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -72,31 +67,6 @@ public class SectionsController {
         sectionsService.save(new Sections(sectionsDTO.getName()));
 
         return "redirect:sections";
-    }
-
-    @GetMapping("/delete")
-    public String deleteById(@RequestParam(value = "id") int id, Model model) {
-        Sections section = sectionsService.findById(id);
-        if (section == null) {
-            model.addAttribute("description", "Error deleting the section");
-            model.addAttribute("cause", "The section with the given id does not exist");
-            return "sections/error";
-        }
-
-        List<Books> books = new ArrayList<>(section.getBooks());
-
-        for (Books book: books) {
-            section.getBooks().remove(book);
-
-            Authors author = book.getAuthor();
-
-            author.getBooks().remove(book);
-
-            booksService.deleteById(book.getId());
-        }
-
-        sectionsService.deleteById(id);
-        return returnList(model);
     }
 
     @GetMapping("/update")

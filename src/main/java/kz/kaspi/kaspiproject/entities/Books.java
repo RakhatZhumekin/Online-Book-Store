@@ -40,6 +40,9 @@ public class Books {
     @Column
     private boolean deleted = false;
 
+    @Column
+    private String description;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "book", fetch = FetchType.EAGER)
     private List<BasketItem> basketItems = new ArrayList<>();
 
@@ -47,7 +50,7 @@ public class Books {
 
     }
 
-    public Books(String name, Authors author, Sections section, Language language, int price, int quantity, Status status) {
+    public Books(String name, Authors author, Sections section, Language language, int price, int quantity, Status status, String description) {
         this.name = name;
         this.author = author;
         this.section = section;
@@ -55,6 +58,7 @@ public class Books {
         this.price = price;
         this.quantity = quantity;
         this.status = status;
+        this.description = description;
     }
 
     public int getId() {
@@ -117,6 +121,10 @@ public class Books {
         return status;
     }
 
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     public boolean isDeleted() {
         return deleted;
     }
@@ -125,8 +133,12 @@ public class Books {
         this.deleted = deleted;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<BasketItem> getBasketItems() {

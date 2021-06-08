@@ -67,7 +67,7 @@
     </div>
     <div class="main" sec:authorize="!hasAuthority('admin')">
         <div class="links">
-            <a th:href="@{/}">Main page</a>
+            <a th:href="@{/}">Home page</a>
             <a th:href="@{/books}">Default list</a>
             <a sec:authorize="hasAuthority('user')" th:href="@{/basket}">Basket</a>
             <a sec:authorize="hasAuthority('user')" th:href="@{/orders}">Orders</a>
@@ -95,7 +95,7 @@
             </thead>
             <tbody>
                 <tr th:each="book: ${books}">
-                    <td th:text="${book.name}">Bob</td>
+                    <td><a th:href="@{/books/{id}(id=${book.id})}" th:text="${book.name}">Bob</a></td>
                     <td th:text="${book.author.name}">Picasso</td>
                     <td th:text="${book.section.name}"></td>
                     <td th:text="${book.language.name}"></td>

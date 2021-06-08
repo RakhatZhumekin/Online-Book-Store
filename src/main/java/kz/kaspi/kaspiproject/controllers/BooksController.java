@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -157,17 +156,28 @@ public class BooksController {
             return "authors/error";
         }
 
-        BooksDTO booksDTO = new BooksDTO();
-        booksDTO.setId(book.getId());
-        booksDTO.setName(book.getName());
-        booksDTO.setAuthor(book.getAuthor());
-        booksDTO.setSection(book.getSection());
-        booksDTO.setLanguage(book.getLanguage());
-        booksDTO.setPrice(book.getPrice());
-        booksDTO.setQuantity(book.getQuantity());
+        if (getCurrentUser() == null) {
+            model.addAttribute("book", book);
+            return "books/details";
+        }
+        else if (getCurrentUser().getRole().getName().equals("user")) {
+            model.addAttribute("book", book);
+            return "books/details";
+        }
+        else {
+            BooksDTO booksDTO = new BooksDTO();
+            booksDTO.setId(book.getId());
+            booksDTO.setName(book.getName());
+            booksDTO.setAuthor(book.getAuthor());
+            booksDTO.setSection(book.getSection());
+            booksDTO.setLanguage(book.getLanguage());
+            booksDTO.setPrice(book.getPrice());
+            booksDTO.setQuantity(book.getQuantity());
+            booksDTO.setDescription(book.getDescription());
 
-        model.addAttribute("book", booksDTO);
-        return "books/update";
+            model.addAttribute("book", booksDTO);
+            return "books/update";
+        }
     }
 
     @PostMapping
@@ -177,9 +187,9 @@ public class BooksController {
             return "books/new";
         }
 
-        if (booksService.findByName(booksDTO.getName()) != null || !booksService.findByName(booksDTO.getName()).isDeleted()) {
+        if (booksService.findByName(booksDTO.getName()) != null) {
             model.addAttribute("description", "Error creating the book");
-            model.addAttribute("cause", "The book with the given name already exists");
+            model.addAttribute("cause", "The book with the given name already exists in the database");
             return "books/error";
         }
 
@@ -191,7 +201,7 @@ public class BooksController {
             status = Status.AVAILABLE;
 
         booksService.save(new Books(booksDTO.getName(), booksDTO.getAuthor(), booksDTO.getSection(),
-                booksDTO.getLanguage(), booksDTO.getPrice(), booksDTO.getQuantity(), status));
+                booksDTO.getLanguage(), booksDTO.getPrice(), booksDTO.getQuantity(), status, booksDTO.getDescription()));
 
         return "redirect:books";
     }
@@ -244,6 +254,7 @@ public class BooksController {
         Language language = booksDTO.getLanguage();
         int price = booksDTO.getPrice();
         int quantity = booksDTO.getQuantity();
+        String description = booksDTO.getDescription();
 
         Status status;
 
@@ -265,6 +276,7 @@ public class BooksController {
         currentBook.setPrice(price);
         currentBook.setQuantity(quantity);
         currentBook.setStatus(status);
+        currentBook.setDescription(description);
 
         booksService.save(currentBook);
         return returnListAdmin(model);

@@ -25,7 +25,5 @@ public class BasketService {
 
     public List<BasketItem> findAllByUser(Users user) { return basketRepository.findAllByUser(user); }
 
-    public BasketItem findByBookAndUser(Books book, Users user) { return basketRepository.findByBookAndUser(book, user); }
-
     public BasketItem findByBookAndUserAndActive(Books book, Users user, boolean active) { return basketRepository.findByBookAndUserAndActive(book, user, active); }
 }

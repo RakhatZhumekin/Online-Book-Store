@@ -1,0 +1,30 @@
+h1 {
+    text-align: center;
+    color: black;
+    font-size: 25px;
+}
+
+h2 {
+    font-size: 20px;
+    margin-left: 10px;
+}
+
+.links {
+    display: flex;
+    justify-content: space-around;
+    font-size: 20px;
+}
+
+.purchase {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 20px;
+}
+
+#name {
+    font-size: 20px;
+}
+
+#description {
+    width: 1300px;
+}

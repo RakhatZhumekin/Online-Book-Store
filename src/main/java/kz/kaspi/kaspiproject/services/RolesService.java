@@ -18,9 +18,4 @@ public class RolesService {
     public Roles findById(int id) {
         return rolesRepository.findById(id).orElse(null);
     }
-
-    public List<Roles> findAll() {
-        return rolesRepository.findAll();
-    }
-
 }

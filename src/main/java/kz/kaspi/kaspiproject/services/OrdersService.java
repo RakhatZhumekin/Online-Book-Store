@@ -16,8 +16,6 @@ public class OrdersService {
 
     public Orders findById(long id) { return ordersRepository.findById(id).orElse(null); }
 
-    public void deleteById(long id) { ordersRepository.deleteById(id); }
-
     public List<Orders> findAllByUser(Users user) { return ordersRepository.findAllByUser(user); }
 
     public void save(Orders order) { ordersRepository.save(order); }

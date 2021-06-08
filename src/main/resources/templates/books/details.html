@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${book.name}">Book</title>
+    <link rel="stylesheet" href="../css/books/details.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="links">
+        <a th:href="@{/}">Home page</a>
+        <a th:href="@{/books}">Main page</a>
+        <a sec:authorize="!hasAuthority('user')" th:href="@{/signup/login}" id="login">Login</a>
+        <a sec:authorize="!hasAuthority('user')" th:href="@{/signup}" id="register">Register</a>
+        <div sec:authorize="hasAuthority('user')" >
+            <h1 id="name" sec:authentication="name"></h1>
+            <form th:action="@{/logout}" method="POST">
+                <button type="submit" class="btn btn-default">Logout</button>
+            </form>
+        </div>
+    </div>
+    <h1 th:text="${book.name}"></h1>
+    <h2>Written by: <span th:text="${book.author.name}"></span></h2>
+    <h2>Section: <span th:text="${book.section.name}"></span></h2>
+    <h2>Written in: <span th:text="${book.language.name}"></span></h2>
+    <h2>Price of one copy: <span th:text="${book.price}"></span></h2>
+    <h2>Copies available: <span th:text="${book.quantity}"></span></h2>
+    <h2>Status: <span th:text="${book.status.name}"></span></h2>
+    <h2 id="description">Description: <span th:text="${book.description}"></span></h2>
+    <div sec:authorize="hasAuthority('user')" th:if="${book.quantity > 0}" class="purchase">
+        <label>Purchase: </label>
+        <form th:action="@{/books/add}">
+            <input type="hidden" th:name="name" th:value="${book.name}">
+            <input type="number" min="1" th:max="${book.quantity}" th:name="quantity" required/>
+            <button type="submit" class="btn btn-default">Add to Cart</button>
+        </form>
+    </div>
+</body>
+</html>
