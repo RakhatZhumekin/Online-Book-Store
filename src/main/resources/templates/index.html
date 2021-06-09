@@ -3,7 +3,7 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>Hello</title>
+    <title>Welcome</title>
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -19,13 +19,15 @@
         <a sec:authorize="hasAuthority('user')" th:href="@{/orders}">Orders</a>
     </div>
     <div class="main" sec:authorize="!isAuthenticated()">
+        <h1>Welcome to our online book store.</h1>
         <h1><a th:href="@{/signup/login}">Login</a></h1>
         <h1><a th:href="@{/signup}">Register</a></h1>
     </div>
     <div class="main" sec:authorize="isAuthenticated()">
-        <h1>Welcome, <span sec:authentication="name"></span></h1>
+        <h1>Welcome back, <span sec:authentication="name"></span>.</h1>
         <form th:action="@{/logout}" method="POST">
-            <button type="submit" class="btn btn-default">Logout</button>
+            <button type="submit" class="btn btn-default">
+                <span class="glyphicon glyphicon-log-out"></span> Logout</button>
         </form>
     </div>
 </body>

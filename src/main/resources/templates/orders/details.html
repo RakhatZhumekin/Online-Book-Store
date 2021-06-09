@@ -11,7 +11,9 @@
 </head>
 <body>
     <div class="links">
-        <a th:href="@{/}">Back to main page</a>
+        <a th:href="@{/}">Back to home page</a>
+        <a th:href="@{/books}">Back to main page</a>
+        <a th:href="@{/orders}">Back to Orders page</a>
     </div>
     <h1>Details of order <span th:text="${id}"></span> of user <span sec:authentication="name"></span></h1>
     <table class="table table-hover">

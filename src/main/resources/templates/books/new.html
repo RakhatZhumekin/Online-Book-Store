@@ -71,7 +71,8 @@
             <input type="number" th:field="*{quantity}" th:errorclass="is-invalid" required>
             <div class="error" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>
         </div>
-        <button type="submit" class="btn btn-default">Save</button>
+        <button type="submit" class="btn btn-default">
+            <span class="glyphicon glyphicon-save"></span> Save</button>
     </form>
 </body>
 </html>

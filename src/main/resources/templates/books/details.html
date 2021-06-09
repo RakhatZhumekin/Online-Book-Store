@@ -16,9 +16,10 @@
         <a sec:authorize="!hasAuthority('user')" th:href="@{/signup/login}" id="login">Login</a>
         <a sec:authorize="!hasAuthority('user')" th:href="@{/signup}" id="register">Register</a>
         <div sec:authorize="hasAuthority('user')" >
-            <h1 id="name" sec:authentication="name"></h1>
+            <h1 sec:authentication="name"></h1>
             <form th:action="@{/logout}" method="POST">
-                <button type="submit" class="btn btn-default">Logout</button>
+                <button type="submit" class="btn btn-default">
+                    <span class="glyphicon glyphicon-log-out"></span> Logout</button>
             </form>
         </div>
     </div>

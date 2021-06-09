@@ -19,7 +19,8 @@
             <input type="text" th:field="*{name}" th:errorclass="is-invalid">
             <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
         </div>
-        <button type="submit" class="btn btn-default">Save</button>
+        <button type="submit" class="btn btn-default">
+            <span class="glyphicon glyphicon-save"></span> Save</button>
     </form>
 </body>
 </html>

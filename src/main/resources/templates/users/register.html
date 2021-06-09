@@ -33,7 +33,14 @@
             <input type="checkbox" onclick="showPassword()"> Show Password
         </div>
 
-        <button type="submit" class="btn btn-default">Save</button>
+        <div>
+            <p class="already">Already have an account?</p>
+            <a th:href="@{/signup/login}" class="sign">Sign In</a>
+        </div>
+
+        <div class="button">
+            <button type="submit" class="btn btn-default">Register</button>
+        </div>
     </form>
 </body>
 </html>
