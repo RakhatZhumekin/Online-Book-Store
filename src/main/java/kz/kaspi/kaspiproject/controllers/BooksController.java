@@ -47,7 +47,6 @@ public class BooksController {
 
         if (getCurrentUser() != null) {
             if (getCurrentUser().getRole().getName().equals("admin")) {
-                System.out.println(getCurrentUser().getRole().getName());
                 return returnListAdmin(model);
             }
         }
