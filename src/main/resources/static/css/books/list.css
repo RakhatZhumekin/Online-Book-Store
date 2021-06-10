@@ -18,6 +18,10 @@ table {
     margin-right: auto;
 }
 
+#deleted {
+    color: red;
+}
+
 .links {
     display: flex;
     justify-content: space-around;
