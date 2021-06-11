@@ -13,6 +13,8 @@ public interface BasketRepository extends JpaRepository<BasketItem, Long> {
 
     public List<BasketItem> findAllByUser(Users user);
 
+    public List<BasketItem> findAllByBookAndActiveTrue(Books book);
+
     public BasketItem findByBookAndUser(Books book, Users user);
 
     public BasketItem findByBookAndUserAndActive(Books book, Users user, boolean active);

@@ -91,7 +91,6 @@ public class BooksController {
                 return returnList(sectionName, authorName, language, status, from, null, model);
             }
             else {
-                System.out.println("Both from and to are given");
                 return returnList(sectionName, authorName, language, status, from, to, model);
             }
         }
@@ -188,7 +187,7 @@ public class BooksController {
 
         if (booksService.findByName(booksDTO.getName()) != null) {
             model.addAttribute("description", "Error creating the book");
-            model.addAttribute("cause", "The book with the given name already exists in the database");
+            model.addAttribute("cause", "The book with the name '" + booksDTO.getName() + "' already exists in the database");
             return "books/error";
         }
 
@@ -202,15 +201,21 @@ public class BooksController {
         booksService.save(new Books(booksDTO.getName(), booksDTO.getAuthor(), booksDTO.getSection(),
                 booksDTO.getLanguage(), booksDTO.getPrice(), booksDTO.getQuantity(), status, booksDTO.getDescription()));
 
-        return "redirect:books";
+        return "redirect:/books";
     }
 
     @GetMapping("/delete")
-    public String deleteById(@RequestParam(value = "id") int id, Model model) {
+    public String deleteById(@RequestParam(value = "id") int id, Model model, HttpServletRequest httpServletRequest) {
         Books book = booksService.findById(id);
         if (book == null || book.isDeleted()) {
             model.addAttribute("description", "Error deleting the book");
-            model.addAttribute("cause", "The book with the id has already been deleted");
+            model.addAttribute("cause", "The book with the given id has already been deleted");
+            return "books/error";
+        }
+
+        if (basketService.findAllByBookAndActiveTrue(book).size() >= 1) {
+            model.addAttribute("description", "Error deleting the book");
+            model.addAttribute("cause", book.getName() + " is currently in one or more users' baskets");
             return "books/error";
         }
 
@@ -218,11 +223,11 @@ public class BooksController {
 
         booksService.save(book);
 
-        return returnListAdmin(model);
+        return "redirect:" + httpServletRequest.getHeader("Referer");
     }
 
     @GetMapping("/restore")
-    public String restoreById(@RequestParam(value = "id") int id, Model model) {
+    public String restoreById(@RequestParam(value = "id") int id, Model model, HttpServletRequest httpServletRequest) {
         Books book = booksService.findById(id);
 
         if (!book.isDeleted()) {
@@ -235,7 +240,7 @@ public class BooksController {
 
         booksService.save(book);
 
-        return returnListAdmin(model);
+        return "redirect:" + httpServletRequest.getHeader("Referer");
     }
 
     @GetMapping("/update")
