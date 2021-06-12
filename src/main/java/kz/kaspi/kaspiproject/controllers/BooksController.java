@@ -1,20 +1,29 @@
 package kz.kaspi.kaspiproject.controllers;
 
+import jdk.jfr.ContentType;
+import kz.kaspi.kaspiproject.config.FileUploadUtil;
 import kz.kaspi.kaspiproject.dto.BooksDTO;
 import kz.kaspi.kaspiproject.entities.*;
 import kz.kaspi.kaspiproject.entities.Books.Language;
 import kz.kaspi.kaspiproject.entities.Books.Status;
 import kz.kaspi.kaspiproject.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -146,7 +155,7 @@ public class BooksController {
     }
 
     @GetMapping("/{id}")
-    public String findById(@PathVariable int id, Model model) {
+    public String findById(@PathVariable int id, Model model) throws IOException {
         Books book = booksService.findById(id);
         if (book == null || book.isDeleted()) {
             model.addAttribute("description", "Error finding the book");
@@ -174,12 +183,14 @@ public class BooksController {
             booksDTO.setDescription(book.getDescription());
 
             model.addAttribute("book", booksDTO);
+
             return "books/update";
         }
     }
 
     @PostMapping
-    public String save(@Valid @ModelAttribute("book") BooksDTO booksDTO, BindingResult bindingResult, Model model) {
+    public String save(@Valid @ModelAttribute("book") BooksDTO booksDTO,
+                       BindingResult bindingResult, Model model) throws IOException {
 
         if (bindingResult.hasErrors()) {
             return "books/new";
@@ -198,8 +209,14 @@ public class BooksController {
         else
             status = Status.AVAILABLE;
 
-        booksService.save(new Books(booksDTO.getName(), booksDTO.getAuthor(), booksDTO.getSection(),
-                booksDTO.getLanguage(), booksDTO.getPrice(), booksDTO.getQuantity(), status, booksDTO.getDescription()));
+        String fileName = StringUtils.cleanPath(booksDTO.getPhoto().getOriginalFilename());
+
+        Books savedBook = booksService.save(new Books(booksDTO.getName(), booksDTO.getAuthor(), booksDTO.getSection(),
+                booksDTO.getLanguage(), booksDTO.getPrice(),
+                booksDTO.getQuantity(), status, booksDTO.getDescription(), fileName));
+
+        String uploadDir = "book-photos/" + savedBook.getId();
+        FileUploadUtil.saveFile(uploadDir, fileName, booksDTO.getPhoto());
 
         return "redirect:/books";
     }
@@ -243,8 +260,9 @@ public class BooksController {
         return "redirect:" + httpServletRequest.getHeader("Referer");
     }
 
-    @GetMapping("/update")
-    public String update(@Valid @ModelAttribute("book") BooksDTO booksDTO, BindingResult bindingResult, Model model) {
+    @PostMapping("/update")
+    public String update(@Valid @ModelAttribute("book") BooksDTO booksDTO,
+                         BindingResult bindingResult, Model model) throws IOException {
 
         if (bindingResult.hasErrors()) {
             return "books/update";
@@ -282,8 +300,21 @@ public class BooksController {
         currentBook.setStatus(status);
         currentBook.setDescription(description);
 
-        booksService.save(currentBook);
-        return returnListAdmin(model);
+        if (booksDTO.getPhoto().isEmpty()) {
+            booksService.save(currentBook);
+        }
+        else {
+            String fileName = StringUtils.cleanPath(booksDTO.getPhoto().getOriginalFilename());
+
+            currentBook.setPhoto(fileName);
+
+            booksService.save(currentBook);
+
+            String uploadDir = "book-photos/" + currentBook.getId();
+            FileUploadUtil.saveFile(uploadDir, fileName, booksDTO.getPhoto());
+        }
+
+        return "redirect:/books";
     }
 
     private String returnList(String sectionName, String authorName, Language language, Status status, String from, String to, Model model) {

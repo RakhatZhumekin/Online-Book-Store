@@ -3,7 +3,9 @@ package kz.kaspi.kaspiproject.dto;
 import kz.kaspi.kaspiproject.entities.Authors;
 import kz.kaspi.kaspiproject.entities.Books.Language;
 import kz.kaspi.kaspiproject.entities.Sections;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.Transient;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -34,6 +36,8 @@ public class BooksDTO {
     @NotBlank(message = "Give description")
     @Size(min = 5, max = 200, message = "The description must be between 5 and 200 characters")
     private String description;
+
+    private MultipartFile photo;
 
     public BooksDTO() {
     }
@@ -100,5 +104,13 @@ public class BooksDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public MultipartFile getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(MultipartFile photo) {
+        this.photo = photo;
     }
 }

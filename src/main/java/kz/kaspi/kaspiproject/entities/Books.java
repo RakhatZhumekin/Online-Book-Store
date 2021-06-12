@@ -43,6 +43,9 @@ public class Books {
     @Column
     private String description;
 
+    @Column
+    private String photo;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "book", fetch = FetchType.EAGER)
     private List<BasketItem> basketItems = new ArrayList<>();
 
@@ -50,7 +53,7 @@ public class Books {
 
     }
 
-    public Books(String name, Authors author, Sections section, Language language, int price, int quantity, Status status, String description) {
+    public Books(String name, Authors author, Sections section, Language language, int price, int quantity, Status status, String description, String photo) {
         this.name = name;
         this.author = author;
         this.section = section;
@@ -59,6 +62,7 @@ public class Books {
         this.quantity = quantity;
         this.status = status;
         this.description = description;
+        this.photo = photo;
     }
 
     public int getId() {
@@ -139,6 +143,21 @@ public class Books {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    @Transient
+    public String getPhotoImagePath() {
+        if (photo == null) return null;
+
+        return "/book-photos/" + id + "/" + photo;
     }
 
     public List<BasketItem> getBasketItems() {

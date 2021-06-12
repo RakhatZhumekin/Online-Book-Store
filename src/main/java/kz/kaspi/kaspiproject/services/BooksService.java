@@ -23,8 +23,8 @@ public class BooksService {
         return booksRepository.findById(id).orElse(null);
     }
 
-    public void save(Books book) {
-        booksRepository.save(book);
+    public Books save(Books book) {
+        return booksRepository.save(book);
     }
 
     public List<Books> findAll() {

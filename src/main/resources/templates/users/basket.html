@@ -19,6 +19,7 @@
     <table class="table table-hover">
         <thead>
             <tr>
+                <td>Cover photo</td>
                 <td>Book name</td>
                 <td>Book author</td>
                 <td>Book section</td>
@@ -30,6 +31,7 @@
         </thead>
         <tbody>
             <tr th:each="item: ${items}" th:if="${item.active}">
+                <td><img th:src="${item.book.getPhotoImagePath}" width="100px"></td>
                 <td th:text="${item.book.name}">Book</td>
                 <td th:text="${item.book.author.name}">Author</td>
                 <td th:text="${item.book.section.name}">Section</td>

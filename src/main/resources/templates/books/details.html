@@ -24,6 +24,7 @@
         </div>
     </div>
     <h1 th:text="${book.name}"></h1>
+    <img th:src="${book.getPhotoImagePath}" width="200px">
     <h2>Written by: <span th:text="${book.author.name}"></span></h2>
     <h2>Section: <span th:text="${book.section.name}"></span></h2>
     <h2>Written in: <span th:text="${book.language.name}"></span></h2>

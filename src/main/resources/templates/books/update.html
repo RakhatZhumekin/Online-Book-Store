@@ -13,7 +13,7 @@
   <div id="home">
     <a th:href="@{/books}">Back to list</a>
   </div>
-  <form th:action="@{/books/update}" method="get" th:object="${book}" id="update">
+  <form th:action="@{/books/update}" method="post" th:object="${book}" enctype="multipart/form-data" id="update">
       <input type="hidden" th:field="*{id}">
       <div class="form-group">
           <label>Name</label>
@@ -72,6 +72,13 @@
           <input type="number" th:field="*{quantity}" th:errorclass="is-invalid" required>
           <div class="error" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>
       </div>
+
+      <div class="form-group">
+          <label>Cover photo</label>
+          <input type="file" th:field="*{photo}" accept="image/png, image/jpeg" th:errorclass="is-invalid"/>
+          <div class="error" th:if="${#fields.hasErrors('photo')}" th:errors="*{photo}"></div>
+      </div>
+
       <button type="submit" class="btn btn-default">
           <span class="glyphicon glyphicon-save"></span> Save</button>
   </form>

@@ -24,6 +24,7 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation group: 'org.springframework', name: 'spring-test', version: '5.3.6'
     testImplementation 'org.springframework.security:spring-security-test'
 }
 
